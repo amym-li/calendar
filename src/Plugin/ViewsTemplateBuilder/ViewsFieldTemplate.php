@@ -79,7 +79,7 @@ class ViewsFieldTemplate extends ViewsDuplicateBuilderBase {
       $config_form['base_path'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Base View Path'),
-        '#description' => $this->t('@todo add description'),
+        '#description' => $this->t('This view will be displayed by visiting this path on your site.'),
         '#default_value' => $replacements['base_path'],
         '#required' => TRUE,
         // @todo add Validation for path element. From Views?
