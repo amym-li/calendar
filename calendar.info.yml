@@ -7,3 +7,4 @@ dependencies:
   - views_templates
 package: Date/Time
 core: 8.x
+configure: 'calendar.admin_form'
