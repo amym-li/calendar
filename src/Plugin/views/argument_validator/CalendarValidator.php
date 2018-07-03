@@ -5,6 +5,7 @@ namespace Drupal\calendar\Plugin\views\argument_validator;
 use Drupal\calendar\DateArgumentWrapper;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\views\Plugin\views\argument\ArgumentPluginBase;
 use Drupal\views\Plugin\views\argument\Date;
 use Drupal\views\Plugin\views\argument_validator\ArgumentValidatorPluginBase;
@@ -127,5 +128,11 @@ class CalendarValidator extends ArgumentValidatorPluginBase {
     ];
   }
 
+  /**
+   * {@inheritdoc}}
+   */
+  public function getContextDefinition() {
+    return new ContextDefinition('string', $this->argument->adminLabel(), FALSE);
+  }
 
 }
