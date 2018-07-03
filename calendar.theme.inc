@@ -8,6 +8,7 @@ use Drupal\calendar\CalendarHelper;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Datetime\Entity\DateFormat;
 use Drupal\views\Views;
+use Drupal\Core\Link;
 
 /**
  * Display a month view.
@@ -598,7 +599,7 @@ function template_preprocess_calendar_datebox(&$vars) {
   $day_url = CalendarHelper::getURLForGranularity($view, 'day', [$full_date_arg]);
 //  $vars['url'] = str_replace([$month_path, $year_path], $day_path, date_pager_url($view, NULL, $date, $force_view_url));
   if ($day_url) {
-    $vars['link'] = \Drupal::l($vars['day'],$day_url);
+    $vars['link'] = Link::fromTextAndUrl($vars['day'],$day_url)->toString();
   }
   else {
     $vars['link'] = $vars['day'];
