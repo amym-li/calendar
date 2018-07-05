@@ -164,6 +164,7 @@ class Calendar extends StylePluginBase {
 
     $options['calendar_type'] = ['default' => 'month'];
     $options['name_size'] = ['default' => 3];
+    $options['month_name_size'] = ['default' => 99];
     $options['mini'] = ['default' => 0];
     $options['with_weekno'] = ['default' => 0];
     $options['multiday_theme'] = ['default' => 1];
@@ -210,6 +211,21 @@ class Calendar extends StylePluginBase {
       '#states' => [
         'visible' => [
           ':input[name="style_options[calendar_type]"]' => ['value' => 'month'],
+        ],
+      ],
+    ];
+    $form['month_name_size'] = [
+      '#title' => $this->t('Calendar month names'),
+      '#default_value' => $this->options['month_name_size'],
+      '#type' => 'radios',
+      '#options' => [
+        1 => $this->t('Abbreviated name'),
+        99 => $this->t('Full name'),
+      ],
+      '#description' => $this->t('The way month names should be displayed in a year calendar.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="style_options[calendar_type]"]' => ['value' => 'year'],
         ],
       ],
     ];
@@ -493,6 +509,7 @@ class Calendar extends StylePluginBase {
 
     // Add calendar style information to the view.
     $this->styleInfo->setCalendarPopup($this->displayHandler->getOption('calendar_popup'));
+    $this->styleInfo->setMonthNameSize($this->options['month_name_size']);
     $this->styleInfo->setNameSize($this->options['name_size']);
     $this->styleInfo->setMini($this->options['mini']);
     $this->styleInfo->setShowWeekNumbers($this->options['with_weekno']);

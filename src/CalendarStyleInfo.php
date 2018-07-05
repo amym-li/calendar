@@ -24,6 +24,14 @@ class CalendarStyleInfo {
   protected $mini;
 
   /**
+   * The size of the month name.
+   *
+   * @var int
+   *   The size of the month name.
+   */
+  protected $monthNameSize;
+
+  /**
    * The size of the calendar name.
    *
    * @var int
@@ -156,6 +164,26 @@ class CalendarStyleInfo {
    */
   public function setMini($mini) {
     $this->mini = $mini;
+  }
+
+  /**
+   * Getter for the month name size.
+   *
+   * @return int
+   *   The month name size.
+   */
+  public function getMonthNameSize() {
+    return $this->monthNameSize;
+  }
+
+  /**
+   * Setter for the month name size.
+   *
+   * @param int $nameSize
+   *   The month name size.
+   */
+  public function setMonthNameSize($nameSize) {
+    $this->monthNameSize = $nameSize;
   }
 
   /**

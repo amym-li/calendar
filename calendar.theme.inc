@@ -101,6 +101,10 @@ function template_preprocess_calendar_year(&$vars) {
   $rows = $vars['rows'];
   $months = [];
   foreach ($rows as $month => $month_rows) {
+    // Set the month name.
+    $month_format = ($vars['options']['month_name_size'] == 1) ? "M" : "F";
+    $vars['options']['month_name'] = t(date($month_format, mktime(0, 0, 0, $month, 10)));
+    
     $view->dateInfo->setMinMonth($month);
     $view->dateInfo->setGranularity('month');
     $view->styleInfo->setMini(TRUE);
