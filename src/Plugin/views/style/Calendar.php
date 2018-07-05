@@ -708,6 +708,12 @@ class Calendar extends StylePluginBase {
             $item['class'] .= ($current_day_date == $today && $in_month ? ' today' : '') .
               ($current_day_date < $today ? ' past' : '') .
               ($current_day_date > $today ? ' future' : '');
+
+            if (count($singleday_buckets[$week_day]) == 0) {
+              if ($max_multirow_count == 0 ) {
+                $item['class'] .= ' no-entry';
+              }
+            }
           }
           else {
             $index = $i - 1;
