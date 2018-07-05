@@ -452,7 +452,7 @@ class Calendar extends StylePluginBase {
       return;
     }
     if (!$argument = CalendarHelper::getDateArgumentHandler($this->view)) {
-      debug('\Drupal\calendar\Plugin\views\style\CalendarStyle: A calendar date argument is required when using the calendar style, but it is missing or is not using the default date.');
+      debug('\Drupal\calendar\Plugin\views\style\CalendarStyle: A calendar date argument is required when using the calendar style, to add a date argument in a view, please go to Advanced > Contextual Filters on the views configuration panel.');
       return;
     }
 
@@ -1291,7 +1291,7 @@ class Calendar extends StylePluginBase {
     // @todo Validate row plugin
     $argument = CalendarHelper::getDateArgumentHandler($this->view, $display_id);
     if (empty($argument)) {
-      $errors[] = $this->t('\Drupal\calendar\Plugin\views\style\CalendarStyle: A calendar date argument is required when using the calendar style, but it is missing or is not using the default date.');
+      $errors[] = $this->t('\Drupal\calendar\Plugin\views\style\CalendarStyle: A calendar date argument is required when using the calendar style, to add a date argument in a view, please go to Advanced > Contextual Filters on the views configuration panel.');
     }
     return $errors;
 
