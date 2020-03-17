@@ -11,7 +11,6 @@ use Drupal\views\Plugin\views\argument\ArgumentPluginBase;
 use Drupal\views\Plugin\views\filter\Broken;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
-use Drupal\Component\Utility\Unicode;
 use Drupal\views\Plugin\views\argument\Date as ViewsDateArg;
 
 /**
@@ -43,7 +42,7 @@ class CalendarHelper extends DateHelper {
       $row[] = ['header' => TRUE, 'class' => 'days week', 'data' => '', 'header_id' => 'Week'];
     }
     foreach ($untranslated_days as $delta => $day) {
-      $label = $len < 3 ? Unicode::substr($translated_days[$delta], 0 , $len) : $translated_days[$delta];
+      $label = $len < 3 ? mb_substr($translated_days[$delta], 0 , $len) : $translated_days[$delta];
       $row[] = ['header' => TRUE, 'class' => "days " . $day, 'data' => $label, 'header_id' => $full_translated_days[$delta]];
     }
     return $row;
@@ -465,8 +464,8 @@ class CalendarHelper extends DateHelper {
             break;
 
           default:
-            // If this is not a date field, nothing more to do.
-            continue;
+            // If this is not a date field, continue to the next field.
+            continue 2;
         }
 
 //        $revision = in_array($base, array('node_revision')) ? FIELD_LOAD_REVISION : FIELD_LOAD_CURRENT;

@@ -39,7 +39,7 @@ class CalendarLegend extends BlockBase implements BlockPluginInterface {
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->setConfigurationValue('calendar_legend_view_settings_view', $form_state->getValue('calendar_legend_view'));
-    drupal_set_message($this->t('The view for the calendar legend has been set.'));
+    $this->messenger()->addMessage($this->t('The view for the calendar legend has been set.'));
   }
 
   /**

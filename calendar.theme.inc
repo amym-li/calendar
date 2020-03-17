@@ -77,11 +77,13 @@ function template_preprocess_calendar_mini(&$vars) {
   // Add in all the $vars added by the main calendar preprocessor.
   template_preprocess_calendar_month($vars);
 
+  $date = $vars['date'];
   $view = $vars['view'];
 
   // Make sure that the calendar title links go to the month view,
   // not the year view (if this is embedded in a year display).
-  $view->override_path =  calendar_granularity_path($view, 'month');
+  $full_date_arg = str_replace('-', '', $date);
+  $view->override_path =  CalendarHelper::getURLForGranularity($view, 'month', [$full_date_arg]);
 
   $view->date_info->show_title = !empty($view->date_info->show_title) ? $view->date_info->show_title : FALSE;
   $vars['show_title'] = $view->date_info->show_title;
@@ -580,11 +582,8 @@ function template_preprocess_calendar_item(&$vars) {
     $vars['rendered_fields'] = [$item->getRenderedFields()];
   }
   foreach ($vars['view']->field as $id => $field) {
-    foreach ($vars['rendered_fields'] as $index => &$render_array) {
-
-    }
     if ($field->options['exclude'] || (!empty($item->getIsMultiDay()) && in_array($id, $multiday_hidden))) {
-      unset($render_array[$field->field]);
+      unset($vars['rendered_fields'][0][$id]);
     }
   }
 
@@ -635,6 +634,7 @@ function template_preprocess_calendar_month_multiple_entity(&$vars) {
   $curday = $vars['curday'];
   $count = $vars['count'];
   $ids = $vars['ids'];
+  $date = $vars['date'];
 
   // get the year month and date
   $parts = explode('-', substr($curday, 0, 10));
@@ -643,8 +643,9 @@ function template_preprocess_calendar_month_multiple_entity(&$vars) {
   $day = intval($parts[2]);
 
   // create the link to the day
-  $month_path = calendar_granularity_path($view, 'month');
-  $day_path = calendar_granularity_path($view, 'day');
+  $full_date_arg = str_replace('-', '', $date);
+  $month_path = CalendarHelper::getURLForGranularity($view, 'month', [$full_date_arg]);
+  $day_path = CalendarHelper::getURLForGranularity($view, 'day', [$full_date_arg]);
   $vars['link'] = str_replace($month_path, $day_path, date_pager_url($view, NULL, \Drupal\Component\Datetime\DateTimePlus::datePad($year, 4) . '-' . \Drupal\Component\Datetime\DateTimePlus::datePad($month) . '-' . \Drupal\Component\Datetime\DateTimePlus::datePad($day)));
 }
 

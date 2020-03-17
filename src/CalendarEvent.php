@@ -235,7 +235,7 @@ class CalendarEvent {
    *   The public url to this event.
    */
   public function getUrl() {
-    return $this->getUrl();
+    return $this->entity->toUrl();
   }
 
 

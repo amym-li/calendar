@@ -46,7 +46,8 @@ class CalendarPager extends PagerPluginBase {
    * {@inheritdoc}
    */
   public function render($input) {
-    if (!$this->argument->validateValue()) {
+    // The $this->argument is an \Drupal\calendar\DateArgumentWrapper object or FALSE.
+    if (!$this->argument || !$this->argument->validateValue()) {
       return [];
     }
     $items['previous'] = [
