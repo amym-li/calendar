@@ -2,7 +2,6 @@
 
 namespace Drupal\calendar\Plugin\Derivative;
 
-
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -143,13 +142,27 @@ class ViewsFieldTemplate implements ContainerDeriverInterface {
     $field_storages = $this->field_manager->getFieldStorageDefinitions($entity_type->id());
 
     foreach ($field_storages as $field_id => $field_storage) {
-      if ($field_storage->getType() == 'datetime') {
+      $type = $field_storage->getType();
+      $field_definition = \Drupal::service('plugin.manager.field.field_type')->getDefinition($type);
+      $class = $field_definition['class'];
+      $classes = [];
+      $classes[$type] = [];
+      $classes[$type][] = $class;
+      while ($class !== FALSE) {
+        $classes[$type][] = get_parent_class($class);
+        $class = end($classes[$type]);
+      }
+      if (in_array("Drupal\datetime\Plugin\Field\FieldType\DateTimeItem", $classes[$type])) {
         $entity_type_id = $entity_type->id();
-        // Find better way to get table name.
-        $field_table = $entity_type_id . '__' . $field_id;
-        $field_table_data = $this->viewsData->get($field_table);
-
-        if (isset($field_table_data[$field_id])) {
+        $views_data = $this->viewsData->get();
+        foreach ($views_data as $key => $data) {
+          if (strstr($key, $field_id) && isset($data[$field_id])) {
+            $field_table = $key;
+            $field_table_data = $data;
+            break;
+          }
+        }
+        if (isset($field_table_data)) {
           $derivative = [];
           $field_info = $field_table_data[$field_id];
           $derivative['field_id'] = $field_id;

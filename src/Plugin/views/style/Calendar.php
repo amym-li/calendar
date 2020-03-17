@@ -474,7 +474,7 @@ class Calendar extends StylePluginBase {
 
     if (!$argument->validateValue()) {
       if (!$argument->getDateArg()->getValue()) {
-       $msg = 'No calendar date argument value was provided.';
+        $msg = 'No calendar date argument value was provided.';
       }
       else {
         $msg = t('The value <strong>@value</strong> is not a valid date argument for @granularity',
@@ -555,9 +555,9 @@ class Calendar extends StylePluginBase {
       /** @var \Drupal\calendar\CalendarEvent $event_info */
       foreach ($events as $event_info) {
 //        $event->granularity = $this->dateInfo->granularity;
-        $item_start = $event_info->getStartDate()->format('Y-m-d');
-        $item_end = $event_info->getEndDate()->format('Y-m-d');
-        $time_start = $event_info->getStartDate()->format('H:i:s');
+        $item_start = $event_info->calendar_start_date->format('Y-m-d');
+        $item_end = $event_info->calendar_end_date->format('Y-m-d');
+        $time_start = $event_info->calendar_start_date->format('H:i:s');
         $event_info->setRenderedFields($this->rendered_fields[$row_index]);
         $items[$item_start][$time_start][] = $event_info;
       }
@@ -1157,7 +1157,7 @@ class Calendar extends StylePluginBase {
                     // future events
                     for ( $j = 0; $j < $row_diff; $j++) {
                       $bucket[($bucket_row_count + $j) ] = [
-                        'entry' => '&nbsp;',
+                        'entry' => '',
                         'colspan' => 1,
                         'rowspan' => 1,
                         'filled' => TRUE,
