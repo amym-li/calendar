@@ -2,6 +2,7 @@
 
 namespace Drupal\calendar\Plugin\views\style;
 
+use DateTime;
 use Drupal\calendar\CalendarDateInfo;
 use Drupal\calendar\CalendarHelper;
 use Drupal\calendar\CalendarStyleInfo;
@@ -15,6 +16,7 @@ use Drupal\views\Plugin\views\style\StylePluginBase;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 
 /**
  * Views style plugin for the Calendar module.
@@ -525,7 +527,7 @@ class Calendar extends StylePluginBase {
     $this->dateInfo->setMinMonth($argument->getMinDate()->format('n'));
     $this->dateInfo->setMinDay($argument->getMinDate()->format('j'));
     // @todo We shouldn't use DATETIME_DATE_STORAGE_FORMAT.
-    $this->dateInfo->setMinWeek(CalendarHelper::dateWeek(date_format($argument->getMinDate(), DATETIME_DATE_STORAGE_FORMAT)));
+    $this->dateInfo->setMinWeek(CalendarHelper::dateWeek(date_format($argument->getMinDate(), DateTimeItemInterface::DATE_STORAGE_FORMAT)));
     //$this->dateInfo->setRange($argument->options['calendar']['date_range']);
     $this->dateInfo->setMinDate($argument->getMinDate());
     $this->dateInfo->setMaxDate($argument->getMaxDate());
@@ -654,9 +656,9 @@ class Calendar extends StylePluginBase {
     $week_days = CalendarHelper::weekDays(TRUE);
     $week_days = CalendarHelper::weekDaysOrdered($week_days);
     //$month = date_format($this->curday, 'n');
-    $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+    $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
     $today = new \DateTime();
-    $today = $today->format(DATETIME_DATE_STORAGE_FORMAT);
+    $today = $today->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
     $day = $this->currentDay->format('j');
     $this->currentDay->modify('-' . strval($day - 1) . ' days');
     $rows = [];
@@ -716,11 +718,11 @@ class Calendar extends StylePluginBase {
 
         for ($week_day = 0; $week_day < 7; $week_day++) {
 
-          $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+          $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
           $item = NULL;
           $in_month = !($current_day_date < $this->dateInfo->getMinDate()
-              ->format(DATETIME_DATE_STORAGE_FORMAT) || $current_day_date > $this->dateInfo->getMaxDate()
-              ->format(DATETIME_DATE_STORAGE_FORMAT) || $this->currentDay->format('n') != $month);
+              ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT) || $current_day_date > $this->dateInfo->getMaxDate()
+              ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT) || $this->currentDay->format('n') != $month);
 
           // Add the datebox.
           if ($i == 0) {
@@ -779,7 +781,7 @@ class Calendar extends StylePluginBase {
                   $end_day = clone($this->currentDay);
                   $span = $item['colspan'] - 1;
                   $end_day->modify('+' . $span . ' day');
-                  $end_day_date = $end_day->format(DATETIME_DATE_STORAGE_FORMAT);
+                  $end_day_date = $end_day->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
 
                   // If it ends today, add class.
                   if ($end_day_date == $today && $in_month) {
@@ -917,10 +919,10 @@ class Calendar extends StylePluginBase {
       // Add the row into the row array.
       $rows[] = ['data' => $output];
 
-      $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+      $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
       $current_day_month = $this->currentDay->format('n');
     } while ($current_day_month == $month && $current_day_date <= $this->dateInfo->getMaxDate()
-      ->format(DATETIME_DATE_STORAGE_FORMAT));
+      ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT));
     // Merge the day names in as the first row.
     $rows = array_merge([CalendarHelper::weekHeader($this->view)], $rows);
     return $rows;
@@ -937,10 +939,10 @@ class Calendar extends StylePluginBase {
 
     do {
       $rows = array_merge($rows, $this->calendarBuildMiniWeek());
-      $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+      $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
       $current_day_month = $this->currentDay->format('n');
     } while ($current_day_month == $month && $current_day_date <= $this->dateInfo->getMaxDate()
-      ->format(DATETIME_DATE_STORAGE_FORMAT));
+      ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT));
 
     // Merge the day names in as the first row.
     $rows = array_merge([CalendarHelper::weekHeader($this->view)], $rows);
@@ -959,7 +961,7 @@ class Calendar extends StylePluginBase {
    *   buckets and the total row count.
    */
   public function calendarBuildWeek($check_month = FALSE) {
-    $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+    $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
     $month = $this->currentDay->format('n');
     $first_day = \Drupal::config('system.date')->get('first_day');
 
@@ -974,8 +976,8 @@ class Calendar extends StylePluginBase {
 
     for ($i = 0; $i < 7; $i++) {
       if ($check_month && ($current_day_date < $this->dateInfo->getMinDate()
-            ->format(DATETIME_DATE_STORAGE_FORMAT) || $current_day_date > $this->dateInfo->getMaxDate()
-            ->format(DATETIME_DATE_STORAGE_FORMAT) || $this->currentDay->format('n') != $month)) {
+            ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT) || $current_day_date > $this->dateInfo->getMaxDate()
+            ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT) || $this->currentDay->format('n') != $month)) {
         $singleday_buckets[$i][][] = [
           'entry' => [
             '#theme' => 'calendar_empty_day',
@@ -990,7 +992,7 @@ class Calendar extends StylePluginBase {
       }
       $total_rows = max(count($multiday_buckets[$i]) + 1, $total_rows);
       $this->currentDay->modify('+1 day');
-      $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+      $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
     }
 
     return [
@@ -1010,9 +1012,9 @@ class Calendar extends StylePluginBase {
    *   An array of rows with render info.
    */
   public function calendarBuildMiniWeek($check_month = FALSE) {
-    $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+    $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
     $weekdays = CalendarHelper::untranslatedDays();
-    $today = $this->dateFormatter->format(REQUEST_TIME, 'custom', DATETIME_DATE_STORAGE_FORMAT);
+    $today = $this->dateFormatter->format(REQUEST_TIME, 'custom', DateTimeItemInterface::DATE_STORAGE_FORMAT);
     $month = $this->currentDay->format('n');
     $week = CalendarHelper::dateWeek($current_day_date);
 
@@ -1021,7 +1023,7 @@ class Calendar extends StylePluginBase {
     $day_week_day = $this->currentDay->format('w');
     $this->currentDay->modify('-' . ((7 + $day_week_day - $first_day) % 7) . ' days');
 
-    $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+    $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
 
     if (!empty($this->styleInfo->isShowWeekNumbers())) {
       $url = CalendarHelper::getURLForGranularity($this->view, 'week', $this->dateInfo->getMinYear() . $week);
@@ -1044,7 +1046,7 @@ class Calendar extends StylePluginBase {
     }
 
     for ($i = 0; $i < 7; $i++) {
-      $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+      $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
       $class = strtolower($weekdays[$this->currentDay->format('w')] . ' mini');
       if ($check_month && ($current_day_date < $this->dateInfo->getMinDate()
             ->format(DATETIME_DATE_STORAGE_FORMAT) || $current_day_date > $this->dateInfo->getMaxDate()
@@ -1118,7 +1120,7 @@ class Calendar extends StylePluginBase {
    *   The buckets holding singleday event info for a week.
    */
   public function calendarBuildWeekDay($wday, &$multiday_buckets, &$singleday_buckets) {
-    $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+    $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
 
     $max_events = $this->dateInfo->getCalendarType() == 'month' && !empty($this->styleInfo->getMaxItems()) ? $this->styleInfo->getMaxItems() : 0;
     $hide = !empty($this->styleInfo->getMaxItemsStyle()) ? ($this->styleInfo->getMaxItemsStyle() == 'hide') : FALSE;
@@ -1300,7 +1302,7 @@ class Calendar extends StylePluginBase {
    *
    */
   public function calendarBuildDay() {
-    $current_day_date = $this->currentDay->format(DATETIME_DATE_STORAGE_FORMAT);
+    $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
     $selected = FALSE;
     $max_events = !empty($this->styleInfo->getMaxItems()) ? $this->styleInfo->getMaxItems() : 0;
     $ids = [];

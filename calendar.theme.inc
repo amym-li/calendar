@@ -9,6 +9,7 @@ use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Datetime\Entity\DateFormat;
 use Drupal\views\Views;
 use Drupal\Core\Link;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 
 /**
  * Display a month view.
@@ -66,8 +67,8 @@ function template_preprocess_calendar_month(&$vars) {
   $vars['day_names'] = $day_names;
 
   $vars['display_type'] = $view->dateInfo->getGranularity();
-  $vars['min_date_formatted'] = $view->dateInfo->getMinDate()->format(DATETIME_DATE_STORAGE_FORMAT);
-  $vars['max_date_formatted'] = $view->dateInfo->getMaxDate()->format(DATETIME_DATE_STORAGE_FORMAT);
+  $vars['min_date_formatted'] = $view->dateInfo->getMinDate()->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
+  $vars['max_date_formatted'] = $view->dateInfo->getMaxDate()->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
 }
 
 /**
@@ -106,7 +107,7 @@ function template_preprocess_calendar_year(&$vars) {
     // Set the month name.
     $month_format = ($vars['options']['month_name_size'] == 1) ? "M" : "F";
     $vars['options']['month_name'] = t(date($month_format, mktime(0, 0, 0, $month, 10)));
-    
+
     $view->dateInfo->setMinMonth($month);
     $view->dateInfo->setGranularity('month');
     $view->styleInfo->setMini(TRUE);

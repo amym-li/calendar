@@ -11,6 +11,7 @@ use Drupal\views\Plugin\views\argument\ArgumentPluginBase;
 use Drupal\views\Plugin\views\filter\Broken;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\views\Plugin\views\argument\Date as ViewsDateArg;
 
 /**
@@ -409,7 +410,7 @@ class CalendarHelper extends DateHelper {
       $rrule_field = '';
       $delta_field = '';
 //      $sql_type = DATE_UNIX;
-      $sql_type = DATETIME_DATETIME_STORAGE_FORMAT;
+      $sql_type = DateTimeItemInterface::DATE_STORAGE_FORMAT;
       $type = '';
 
       $name = $alias;
@@ -451,7 +452,7 @@ class CalendarHelper extends DateHelper {
 //        switch ($field['type']) {
         switch ($handler->getBaseId()) {
           case 'date':
-            $sql_type = DATETIME_DATETIME_STORAGE_FORMAT;
+            $sql_type = DateTimeItemInterface::DATE_STORAGE_FORMAT;
 //            $sql_type = DATE_ISO;
             break;
 
@@ -460,7 +461,7 @@ class CalendarHelper extends DateHelper {
 
           case 'datetime':
 //            $sql_type = DATE_DATETIME;
-            $sql_type = DATETIME_DATETIME_STORAGE_FORMAT;
+            $sql_type = DateTimeItemInterface::DATE_STORAGE_FORMAT;
             break;
 
           default:
