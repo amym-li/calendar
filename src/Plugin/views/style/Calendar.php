@@ -178,6 +178,7 @@ class Calendar extends StylePluginBase {
     $options['name_size'] = ['default' => 3];
     $options['month_name_size'] = ['default' => 99];
     $options['mini'] = ['default' => 0];
+    $options['link_to_date'] = ['default' => 1];
     $options['with_weekno'] = ['default' => 0];
     $options['multiday_theme'] = ['default' => 1];
     $options['theme_style'] = ['default' => 1];
@@ -219,6 +220,22 @@ class Calendar extends StylePluginBase {
         1 => $this->t('Yes'),
       ],
       '#description' => $this->t('Display the mini style calendar, with no item details. Suitable for a calendar displayed in a block.'),
+      '#dependency' => ['edit-style-options-calendar-type' => ['month']],
+      '#states' => [
+        'visible' => [
+          ':input[name="style_options[calendar_type]"]' => ['value' => 'month'],
+        ],
+      ],
+    ];
+    $form['link_to_date'] = [
+      '#title' => $this->t('Link to date'),
+      '#default_value' => $this->options['link_to_date'],
+      '#type' => 'radios',
+      '#options' => [
+        0 => $this->t('No'),
+        1 => $this->t('Yes'),
+      ],
+      '#description' => $this->t('Links day to day view'),
       '#dependency' => ['edit-style-options-calendar-type' => ['month']],
       '#states' => [
         'visible' => [
@@ -1161,8 +1178,10 @@ class Calendar extends StylePluginBase {
               $all_day = $item->isAllDay();
 
               // Parse out date part.
-              $start_ydate = $this->dateFormatter->format($item->getStartDate()->getTimestamp(), 'custom', 'Y-m-d');
-              $end_ydate = $this->dateFormatter->format($item->getEndDate()->getTimestamp(), 'custom', 'Y-m-d');
+              $start_ydate = $this->dateFormatter->format($item->getStartDate()
+                ->getTimestamp(), 'custom', 'Y-m-d');
+              $end_ydate = $this->dateFormatter->format($item->getEndDate()
+                ->getTimestamp(), 'custom', 'Y-m-d');
               $cur_ydate = $this->dateFormatter->format($this->currentDay->getTimestamp(), 'custom', 'Y-m-d');
 
               $is_multi_day = ($start_ydate < $cur_ydate || $end_ydate > $cur_ydate);
@@ -1230,20 +1249,20 @@ class Calendar extends StylePluginBase {
 
                     // Fill up the preceding buckets - these are available for
                     // future events
-                    for ( $j = 0; $j < $row_diff; $j++) {
-                      $bucket[($bucket_row_count + $j) ] = [
+                    for ($j = 0; $j < $row_diff; $j++) {
+                      $bucket[($bucket_row_count + $j)] = [
                         'entry' => '',
                         'colspan' => 1,
                         'rowspan' => 1,
                         'filled' => TRUE,
                         'avail' => TRUE,
                         'wday' => $wday,
-                        'item' => NULL
+                        'item' => NULL,
                       ];
                     }
                     $bucket[$bucket_index] = [
                       'filled' => FALSE,
-                      'avail' => FALSE
+                      'avail' => FALSE,
                     ];
                   }
                 }
@@ -1397,7 +1416,8 @@ class Calendar extends StylePluginBase {
   }
 
   /**
-   * Get select options for Views displays that support Calendar with set granularity.
+   * Get select options for Views displays that support Calendar with set
+   * granularity.
    *
    * @param $granularity
    *

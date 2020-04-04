@@ -597,13 +597,19 @@ function template_preprocess_calendar_datebox(&$vars) {
   $date = $vars['date'];
   $view = $vars['view'];
   $vars['day'] = intval(substr($date, 8, 2));
-//  $force_view_url = !empty($view->dateInfo->block) ? TRUE : FALSE;
+  $vars['mini'] = !empty($view->styleInfo->isMini());
+  $link_to_day = !empty($view->style_plugin->options["link_to_date"]);
+  //  $force_view_url = !empty($view->dateInfo->block) ? TRUE : FALSE;
 
   $full_date_arg = str_replace('-', '', $date);
   $day_url = CalendarHelper::getURLForGranularity($view, 'day', [$full_date_arg]);
 //  $vars['url'] = str_replace([$month_path, $year_path], $day_path, date_pager_url($view, NULL, $date, $force_view_url));
   if ($day_url) {
-    $vars['link'] = Link::fromTextAndUrl($vars['day'],$day_url)->toString();
+    if (!$link_to_day){
+      $vars['link'] = $vars['day'];
+    } else {
+      $vars['link'] = Link::fromTextAndUrl($vars['day'], $day_url)->toString();
+    }
   }
   else {
     $vars['link'] = $vars['day'];
@@ -612,7 +618,6 @@ function template_preprocess_calendar_datebox(&$vars) {
 
 
   $vars['granularity'] = $view->dateInfo->getGranularity();
-  $vars['mini'] = !empty($view->styleInfo->isMini());
   if ($vars['mini']) {
     if (!empty($vars['selected'])) {
       $vars['class'] = 'mini-day-on';
