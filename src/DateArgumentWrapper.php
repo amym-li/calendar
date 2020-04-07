@@ -75,7 +75,7 @@ class DateArgumentWrapper {
       return 'Y';
     }
     if (stripos($class, 'YearWeekDate') !== FALSE) {
-      return 'YW';
+      return 'oW';
     }
   }
 
@@ -91,7 +91,7 @@ class DateArgumentWrapper {
 
   protected function createFromFormat($value) {
     $format = $this->getArgFormat();
-    if ($format == 'YW') {
+    if ($format == 'oW') {
       $date = new \DateTime();
       $year = (int)substr($value, 0, 4);
       $month = (int)substr($value, 4, 2);
@@ -196,7 +196,7 @@ class DateArgumentWrapper {
     if (empty($value)) {
       return FALSE;
     }
-    if ($this->getArgFormat() == 'YW') {
+    if ($this->getArgFormat() == 'oW') {
       $info = $this->getYearWeek($value);
       // Find the max week for a year. Some years start a 53rd week.
       $max_week = gmdate("W", strtotime("28 December {$info['year']}"));
