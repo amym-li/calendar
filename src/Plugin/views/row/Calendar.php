@@ -18,6 +18,7 @@ use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Plugin which creates a view on the resulting object and formats it as a
@@ -34,6 +35,7 @@ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 class Calendar extends RowPluginBase {
 
   use CalendarViewsTrait;
+  use StringTranslationTrait;
 
   /**
    * @var \Drupal\Core\Datetime\DateFormatter $dateFormatter
@@ -213,7 +215,7 @@ class Calendar extends RowPluginBase {
         return;
       }
       $form['colors']['taxonomy_field'] = [
-          '#title' => t('Term field'),
+          '#title' => $this->t('Term field'),
           '#type' => !empty($vocabulary_field_options) ? 'select' : 'hidden',
           '#default_value' => $this->options['colors']['taxonomy_field'],
           '#empty_value' => (string) $this->t('None'),
@@ -255,7 +257,7 @@ class Calendar extends RowPluginBase {
       $this->options['colors']['calendar_colors_vocabulary'] = $vocab_vids;
 
       $form['colors']['calendar_colors_vocabulary'] = [
-          '#title' => t('Vocabulary Legend Types'),
+          '#title' => $this->t('Vocabulary Legend Types'),
           '#type' => 'value',
           '#value' => $vocab_vids,
         ] + $this->visibleOnLegendState('taxonomy');

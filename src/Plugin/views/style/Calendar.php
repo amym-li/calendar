@@ -17,6 +17,7 @@ use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Views style plugin for the Calendar module.
@@ -33,6 +34,8 @@ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
  * )
  */
 class Calendar extends StylePluginBase {
+
+  use StringTranslationTrait;
 
   /**
    * Does the style plugin for itself support to add fields to it's output.
@@ -524,7 +527,7 @@ class Calendar extends StylePluginBase {
         $msg = 'No calendar date argument value was provided.';
       }
       else {
-        $msg = t('The value <strong>@value</strong> is not a valid date argument for @granularity',
+        $msg = $this->t('The value <strong>@value</strong> is not a valid date argument for @granularity',
           [
             '@value' => $argument->getDateArg()->getValue(),
             '@granularity' => $argument->getGranularity(),
