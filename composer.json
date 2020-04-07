@@ -6,7 +6,7 @@
   "homepage": "http://drupal.org/project/calendar",
   "support": {
     "issues": "https://www.drupal.org/project/issues/calendar",
-    "source": "http://cgit.drupalcode.org/calendar"
+    "source": "https://git.drupalcode.org/project/calendar"
   },
   "require": {
     "drupal/views_templates": "1.*"
