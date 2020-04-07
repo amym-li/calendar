@@ -1046,7 +1046,7 @@ class Calendar extends StylePluginBase {
     $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
 
     if (!empty($this->styleInfo->isShowWeekNumbers())) {
-      $url = CalendarHelper::getURLForGranularity($this->view, 'week', $this->dateInfo->getMinYear() . $week);
+      $url = CalendarHelper::getURLForGranularity($this->view, 'week', [$this->dateInfo->getMinYear() . sprintf('%02s', $week)]);
       if (!empty($url)) {
         $week_number = [
           '#type' => 'link',
