@@ -18,6 +18,7 @@ use Drupal\views\Views;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Component\Datetime\TimeInterface;
 
 /**
  * Views style plugin for the Calendar module.
@@ -121,6 +122,13 @@ class Calendar extends StylePluginBase {
   protected $messenger;
 
   /**
+   * The time interface.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
    * Overrides \Drupal\views\Plugin\views\style\StylePluginBase::init().
    *
    * The style info is set through the parent function, but we also initialize
@@ -149,19 +157,22 @@ class Calendar extends StylePluginBase {
    *   The plugin implementation definition.
    * @param \Drupal\Core\Datetime\DateFormatter $date_formatter
    *   The date formatter service.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time interface.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, DateFormatter $date_formatter, MessengerInterface $messenger) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, DateFormatter $date_formatter, MessengerInterface $messenger, TimeInterface $time) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->definition = $plugin_definition + $configuration;
     $this->dateFormatter = $date_formatter;
     $this->messenger = $messenger;
+    $this->time = $time;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static($configuration, $plugin_id, $plugin_definition, $container->get('date.formatter'), $container->get('messenger'));
+    return new static($configuration, $plugin_id, $plugin_definition, $container->get('date.formatter'), $container->get('messenger'), $container->get('datetime.time'));
   }
 
   /**
@@ -1034,7 +1045,7 @@ class Calendar extends StylePluginBase {
   public function calendarBuildMiniWeek($check_month = FALSE) {
     $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
     $weekdays = CalendarHelper::untranslatedDays();
-    $today = $this->dateFormatter->format(REQUEST_TIME, 'custom', DateTimeItemInterface::DATE_STORAGE_FORMAT);
+    $today = $this->dateFormatter->format($this->time->getRequestTime(), 'custom', DateTimeItemInterface::DATE_STORAGE_FORMAT);
     $month = $this->currentDay->format('n');
     $week = CalendarHelper::dateWeek($current_day_date);
 
@@ -1069,8 +1080,8 @@ class Calendar extends StylePluginBase {
       $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
       $class = strtolower($weekdays[$this->currentDay->format('w')] . ' mini');
       if ($check_month && ($current_day_date < $this->dateInfo->getMinDate()
-            ->format(DATETIME_DATE_STORAGE_FORMAT) || $current_day_date > $this->dateInfo->getMaxDate()
-            ->format(DATETIME_DATE_STORAGE_FORMAT) || $this->currentDay->format('n') != $month)) {
+            ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT) || $current_day_date > $this->dateInfo->getMaxDate()
+            ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT) || $this->currentDay->format('n') != $month)) {
         $class .= ' empty';
 
         $content = [
