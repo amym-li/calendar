@@ -530,7 +530,7 @@ class CalendarHelper extends DateHelper {
           'fullname' => $name,
           'table_name' => $table_name,
           'field_name' => $field_name,
-          'query_name' => $alias,
+          'query_name' => substr($alias,0,60),
           'fromto' => $fromto,
           'tz_handling' => $tz_handling,
           'offset_field' => $offset_field,
