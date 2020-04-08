@@ -899,8 +899,8 @@ class CalendarHelper extends DateHelper {
    * @return \Drupal\Core\Url
    */
   static function getViewsURL(ViewExecutable $view, $display_id, $args = []) {
-    $route_parameters = static::getViewRouteParameters($args);
     $route_name = static::getDisplayRouteName($view->id(), $display_id);
+    $route_parameters = static::getViewRouteParameters($args, $route_name);
     return Url::fromRoute($route_name, $route_parameters);
   }
 
@@ -920,15 +920,57 @@ class CalendarHelper extends DateHelper {
   /**
    * @param $args
    *
+   * @param $route_name
+   *
    * @return array
    */
-  static function getViewRouteParameters($args) {
+  static function getViewRouteParameters($args, $route_name) {
+    $provider = \Drupal::service('router.route_provider');
+    $route = $provider->getRouteByName($route_name);
+    $map = $route->getOption('_view_argument_map');
     $route_parameters = [];
     $arg_position = 0;
     foreach ($args as $arg) {
-      $route_parameters['arg_' . $arg_position] = $arg;
+      $route_parameters[$map['arg_' . $arg_position]] = $arg;
       $arg_position++;
     }
     return $route_parameters;
   }
+
+  /**
+   * Returns all the argument values for the specified view's current display.
+   *
+   * @param \Drupal\views\ViewExecutable $view
+   *   An executed view.
+   * @param string $value
+   *   The date argument value.
+   * @param \Drupal\calendar\DateArgumentWrapper|null $argument_handler
+   *   (optional) A date argument wrapper object. If not specified it will be
+   *   derived from the view.
+   *
+   * @return string[]
+   *   An associative array of argument values keyed by the "arg_" prefix
+   *   followed by the URL position.
+   */
+  static function getViewArgumentValues(ViewExecutable $view, $value, $argument_handler = NULL) {
+    $arg_values = [];
+    if (!isset($argument_handler)) {
+      $argument_handler = static::getDateArgumentHandler($view);
+    }
+    $current_position = 0;
+
+    /** @var \Drupal\views\Plugin\views\argument\ArgumentPluginBase $handler */
+    foreach ($view->argument as $name => $handler) {
+      if ($current_position != $argument_handler->getPosition()) {
+        $arg_values["arg_$current_position"] = $handler->getValue();
+      }
+      else {
+        $arg_values["arg_$current_position"] = $value;
+      }
+      $current_position++;
+    }
+
+    return $arg_values;
+  }
+
 }
