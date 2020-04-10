@@ -395,7 +395,9 @@ table.calendar-legend tr.even .stripe {
 .calendar-calendar td .inner div.calendar div div.view-data-node-data-field-date-field-date-value {
   border-bottom: 1px solid #ccc;
 }
-
+nav.pager > ul {
+  list-style: none;
+}
 /**
  * The following are not used by default but are available for themes.
  */
