@@ -245,10 +245,10 @@ display:
     position: 1
     display_options:
       display_extenders: {  }
-      path: __BASE_PATH/month
+      path: __BASE_PATH
       display_description: ''
       menu:
-        type: tab
+        type: default tab
         title: Month
         description: ''
         expanded: false
@@ -257,7 +257,7 @@ display:
         context: '0'
         menu_name: main
       tab_options:
-        type: normal
+        type: none
         title: Calendar
         description: ''
         weight: 0
