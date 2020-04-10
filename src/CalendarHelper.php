@@ -5,7 +5,6 @@ namespace Drupal\calendar;
 use Datetime;
 use DateTimeZone;
 use Drupal\Core\Datetime\DateHelper;
-use Drupal\Core\Routing\RouteProvider;
 use Drupal\Core\Url;
 use Drupal\views\Plugin\views\argument\ArgumentPluginBase;
 use Drupal\views\Plugin\views\filter\Broken;
@@ -30,7 +29,7 @@ class CalendarHelper extends DateHelper {
     $len = isset($nameSize) ? $view->styleInfo->getNameSize() : (!empty($view->styleInfo->isMini()) ? 1 : 3);
     $with_week = !empty($view->styleInfo->isShowWeekNumbers());
 
-    // create week header
+    // Create week header.
     $untranslated_days = self::untranslatedDays();
     $full_translated_days = self::weekDaysOrdered(self::weekDays(TRUE));
     if ($len == 99) {
@@ -40,15 +39,24 @@ class CalendarHelper extends DateHelper {
       $translated_days = self::weekDaysOrdered(self::weekDaysAbbr(TRUE));
     }
     if ($with_week) {
-      $row[] = ['header' => TRUE, 'class' => 'days week', 'data' => '', 'header_id' => 'Week'];
+      $row[] = [
+        'header' => TRUE,
+        'class' => 'days week',
+        'data' => '',
+        'header_id' => 'Week',
+      ];
     }
     foreach ($untranslated_days as $delta => $day) {
-      $label = $len < 3 ? mb_substr($translated_days[$delta], 0 , $len) : $translated_days[$delta];
-      $row[] = ['header' => TRUE, 'class' => "days " . $day, 'data' => $label, 'header_id' => $full_translated_days[$delta]];
+      $label = $len < 3 ? mb_substr($translated_days[$delta], 0, $len) : $translated_days[$delta];
+      $row[] = [
+        'header' => TRUE,
+        'class' => "days " . $day,
+        'data' => $label,
+        'header_id' => $full_translated_days[$delta],
+      ];
     }
     return $row;
   }
-
 
   /**
    * An array of untranslated day name abbreviations.
@@ -98,7 +106,7 @@ class CalendarHelper extends DateHelper {
    *   The stop date.
    * @param string $measure
    *   (optional) A granularity date part. Defaults to 'seconds'.
-   * @param boolean $absolute
+   * @param bool $absolute
    *   (optional) Indicate whether the absolute value of the difference should
    *   be returned or if the sign should be retained. Defaults to TRUE.
    *
@@ -169,20 +177,20 @@ class CalendarHelper extends DateHelper {
               $date1->modify('-1 year');
               // @TODO self::daysInYear() throws a warning when used with a
               // \DateTime object. See https://www.drupal.org/node/2596043
-//              $item_diff -= self::daysInYear($date1);
+              // $item_diff -= self::daysInYear($date1);
               $item_diff -= 365;
             }
-//            return $item_diff - (self::daysInYear($date2) - $item2);
+            // Return $item_diff - (self::daysInYear($date2) - $item2);.
             return $item_diff - (365 - $item2);
           }
           else {
             // @TODO self::daysInYear() throws a warning when used with a
             // \DateTime object. See https://www.drupal.org/node/2596043
-//            $item_diff = self::daysInYear($date1) - $item1;
+            // $item_diff = self::daysInYear($date1) - $item1;
             $item_diff = 365 - $item1;
             for ($i = 1; $i < $year_diff; $i++) {
               $date1->modify('+1 year');
-//              $item_diff += self::daysInYear($date1);
+              // $item_diff += self::daysInYear($date1);
               $item_diff += 365;
             }
             return $item_diff + $item2;
@@ -196,7 +204,7 @@ class CalendarHelper extends DateHelper {
           $sign = ($year_diff < 0) ? -1 : 1;
 
           for ($i = 1; $i <= abs($year_diff); $i++) {
-            $date1->modify((($sign > 0) ? '+': '-').'1 year');
+            $date1->modify((($sign > 0) ? '+' : '-') . '1 year');
             $week_diff += (self::isoWeeksInYear($date1) * $sign);
           }
           return $week_diff;
@@ -213,8 +221,10 @@ class CalendarHelper extends DateHelper {
    * @param mixed $date
    *   (optional) The current date object, or a date string. Defaults to NULL.
    *
-   * @return integer
+   * @return int
    *   The number of ISO weeks in a year.
+   *
+   * @throws \Exception
    */
   public static function isoWeeksInYear($date = NULL) {
     if (empty($date)) {
@@ -289,6 +299,7 @@ class CalendarHelper extends DateHelper {
           || ($hour2 == 23 && in_array($min2, [$max_minutes, 59]) && in_array($sec2, [$max_seconds, 59]))
           || ($hour1 == 0 && $hour2 == 0 && $min1 == 0 && $min2 == 0 && $sec1 == 0 && $sec2 == 0);
         break;
+
       case 'minute':
         $min_match = $time1 == '00:00:00'
           || ($hour1 == 0 && $min1 == 0);
@@ -296,6 +307,7 @@ class CalendarHelper extends DateHelper {
           || ($hour2 == 23 && in_array($min2, [$max_minutes, 59]))
           || ($hour1 == 0 && $hour2 == 0 && $min1 == 0 && $min2 == 0);
         break;
+
       case 'hour':
         $min_match = $time1 == '00:00:00'
           || ($hour1 == 0);
@@ -303,6 +315,7 @@ class CalendarHelper extends DateHelper {
           || ($hour2 == 23)
           || ($hour1 == 0 && $hour2 == 0);
         break;
+
       default:
         $min_match = TRUE;
         $max_match = FALSE;
@@ -319,7 +332,12 @@ class CalendarHelper extends DateHelper {
    * Calendar display types.
    */
   public static function displayTypes() {
-    return ['year' => t('Year'), 'month' => t('Month'), 'day' => t('Day'), 'week' => t('Week')];
+    return [
+      'year' => t('Year'),
+      'month' => t('Month'),
+      'day' => t('Day'),
+      'week' => t('Week'),
+    ];
   }
 
   /**
@@ -332,6 +350,8 @@ class CalendarHelper extends DateHelper {
    *
    * @return int
    *   The calendar week number.
+   *
+   * @throws \Exception
    */
   public static function dateWeek($date) {
     $date = substr($date, 0, 10);
@@ -382,6 +402,7 @@ class CalendarHelper extends DateHelper {
    * D7.
    *
    * @param string $base
+   *
    * @return array
    */
   public static function dateViewFields($base = 'node') {
@@ -392,8 +413,7 @@ class CalendarHelper extends DateHelper {
     }
 
     $cid = 'date_views_fields_' . $base;
-//    cache_clear_all($cid, 'cache_views');
-
+    // cache_clear_all($cid, 'cache_views');
     // We use fields that provide filter handlers as our universe of possible
     // fields of interest.
     $all_fields = self::viewsFetchFields($base, 'filter');
@@ -409,7 +429,7 @@ class CalendarHelper extends DateHelper {
       $offset_field = '';
       $rrule_field = '';
       $delta_field = '';
-//      $sql_type = DATE_UNIX;
+      // $sql_type = DATE_UNIX;
       $sql_type = DateTimeItemInterface::DATE_STORAGE_FORMAT;
       $type = '';
 
@@ -425,15 +445,14 @@ class CalendarHelper extends DateHelper {
 
       $fromto = [$name, $name];
 
-
       // If we don't have a filter handler, we don't need to do anything more.
       $filterHandler = Views::handlerManager('filter');
-      $handler = $filterHandler->getHandler(['table' => $table_name, 'field' => $field_name,]);
+      $handler = $filterHandler->getHandler(['table' => $table_name, 'field' => $field_name]);
       if ($handler instanceof Broken) {
         continue;
       }
 
-//      $handler = views_get_handler($table_name, $field_name, 'filter');
+      // $handler = views_get_handler($table_name, $field_name, 'filter');
       $pluginDefinition = $handler->getPluginDefinition();
 
       // We don't care about anything but date handlers.
@@ -446,21 +465,21 @@ class CalendarHelper extends DateHelper {
       // For Field module fields, get the date type.
       $custom = [];
       if ($field_name || isset($handler->definition['field_name'])) {
-//        $field = FieldConfig::loadByName($field_name);
-//        $field = field_info_field($handler->definition['field_name']);
+        // $field = FieldConfig::loadByName($field_name);
+        // $field = field_info_field($handler->definition['field_name']);
         $is_field = TRUE;
-//        switch ($field['type']) {
+        // Switch ($field['type']) {.
         switch ($handler->getBaseId()) {
           case 'date':
             $sql_type = DateTimeItemInterface::DATE_STORAGE_FORMAT;
-//            $sql_type = DATE_ISO;
+            // $sql_type = DATE_ISO;
             break;
 
           case 'datestamp':
             break;
 
           case 'datetime':
-//            $sql_type = DATE_DATETIME;
+            // $sql_type = DATE_DATETIME;
             $sql_type = DateTimeItemInterface::DATE_STORAGE_FORMAT;
             break;
 
@@ -469,55 +488,54 @@ class CalendarHelper extends DateHelper {
             continue 2;
         }
 
-//        $revision = in_array($base, array('node_revision')) ? FIELD_LOAD_REVISION : FIELD_LOAD_CURRENT;
+        // $revision = in_array($base, array('node_revision')) ? FIELD_LOAD_REVISION : FIELD_LOAD_CURRENT;
         // @todo find database info
-//        $db_info = date_api_database_info($field, $revision);
+        //   $db_info = date_api_database_info($field, $revision);
         $name = $table_name . "." . $field_name;
         $grans = ['year', 'month', 'day', 'hour', 'minute', 'second'];
         $granularity = !empty($field['granularity']) ? $field['granularity'] : $grans;
 
-//        $fromto = [
-//          $table_name . '.' . $db_info['columns'][$table_name]['value'],
-//          $table_name . '.' . (!empty($field['settings']['todate']) ? $db_info['columns'][$table_name]['value2'] : $db_info['columns'][$table_name]['value']),
-//        ];
-
-//        if (isset($field['settings']['tz_handling'])) {
-//          $tz_handling = $field['settings']['tz_handling'];
-//          $db_info = date_api_database_info($field, $revision);
-//          if ($tz_handling == 'date') {
-//            $offset_field = $table_name . '.' . $db_info['columns'][$table_name]['offset'];
-//          }
-//          $related_fields = [
-//            $table_name . '.' . $db_info['columns'][$table_name]['value'],
-//          ];
-//          if (isset($db_info['columns'][$table_name]['value2'])) {
-//            $related_fields = array_merge($related_fields, [$table_name . '.' . $db_info['columns'][$table_name]['value2']]);
-//          }
-//          if (isset($db_info['columns'][$table_name]['timezone'])) {
-//            $related_fields = array_merge($related_fields, [$table_name . '.' . $db_info['columns'][$table_name]['timezone']]);
-//            $timezone_field = $table_name . '.' . $db_info['columns'][$table_name]['timezone'];
-//          }
-//          if (isset($db_info['columns'][$table_name]['rrule'])) {
-//            $related_fields = array_merge($related_fields, [$table_name . '.' . $db_info['columns'][$table_name]['rrule']]);
-//            $rrule_field = $table_name . '.' . $db_info['columns'][$table_name]['rrule'];
-//          }
-//        }
+        // $fromto = [
+        //          $table_name . '.' . $db_info['columns'][$table_name]['value'],
+        //          $table_name . '.' . (!empty($field['settings']['todate']) ? $db_info['columns'][$table_name]['value2'] : $db_info['columns'][$table_name]['value']),
+        //        ];
+        //        if (isset($field['settings']['tz_handling'])) {
+        //          $tz_handling = $field['settings']['tz_handling'];
+        //          $db_info = date_api_database_info($field, $revision);
+        //          if ($tz_handling == 'date') {
+        //            $offset_field = $table_name . '.' . $db_info['columns'][$table_name]['offset'];
+        //          }
+        //          $related_fields = [
+        //            $table_name . '.' . $db_info['columns'][$table_name]['value'],
+        //          ];
+        //          if (isset($db_info['columns'][$table_name]['value2'])) {
+        //            $related_fields = array_merge($related_fields, [$table_name . '.' . $db_info['columns'][$table_name]['value2']]);
+        //          }
+        //          if (isset($db_info['columns'][$table_name]['timezone'])) {
+        //            $related_fields = array_merge($related_fields, [$table_name . '.' . $db_info['columns'][$table_name]['timezone']]);
+        //            $timezone_field = $table_name . '.' . $db_info['columns'][$table_name]['timezone'];
+        //          }
+        //          if (isset($db_info['columns'][$table_name]['rrule'])) {
+        //            $related_fields = array_merge($related_fields, [$table_name . '.' . $db_info['columns'][$table_name]['rrule']]);
+        //            $rrule_field = $table_name . '.' . $db_info['columns'][$table_name]['rrule'];
+        //          }
+        //        }
         // Get the delta value into the query.
-//        if ($field['cardinality'] != 1) {
-//          array_push($related_fields, "$table_name.delta");
-//          $delta_field = $table_name . '_delta';
-//        }
+        // if ($field['cardinality'] != 1) {
+        //   array_push($related_fields, "$table_name.delta");
+        //   $delta_field = $table_name . '_delta';
+        // }
       }
 
       // Allow custom modules to provide date fields.
       else {
-//        foreach (module_implements('date_views_fields') as $module) {
-//          $function = $module . '_date_views_fields';
-//          if ($custom = $function("$table_name.$field_name")) {
-//            $type = 'custom';
-//            break;
-//          }
-//        }
+        // Foreach (module_implements('date_views_fields') as $module) {
+        //   $function = $module . '_date_views_fields';
+        //   if ($custom = $function("$table_name.$field_name")) {
+        //     $type = 'custom';
+        //     break;
+        //    }
+        // }.
       }
       // Don't do anything if this is not a date field we can handle.
       if (!empty($type) || empty($custom)) {
@@ -525,12 +543,12 @@ class CalendarHelper extends DateHelper {
         $fields['name'][$name] = [
           'is_field' => $is_field,
           'sql_type' => $sql_type,
-//          'label' => $val['group'] . ': ' . $val['title'],
+        // 'label' => $val['group'] . ': ' . $val['title'],
           'granularity' => $granularity,
           'fullname' => $name,
           'table_name' => $table_name,
           'field_name' => $field_name,
-          'query_name' => substr($alias,0,60),
+          'query_name' => substr($alias, 0, 60),
           'fromto' => $fromto,
           'tz_handling' => $tz_handling,
           'offset_field' => $offset_field,
@@ -550,7 +568,7 @@ class CalendarHelper extends DateHelper {
         $fields['alias'][$alias] = $fields['name'][$name];
       }
     }
-//    cache_set($cid, $fields, 'cache_views');
+    // cache_set($cid, $fields, 'cache_views');.
     return $fields;
   }
 
@@ -562,7 +580,8 @@ class CalendarHelper extends DateHelper {
    *
    * @param $base
    * @param $type
-   * @param bool|FALSE $grouping
+   * @param bool|false $grouping
+   *
    * @return array
    */
   private static function viewsFetchFields($base, $type, $grouping = FALSE) {
@@ -579,15 +598,14 @@ class CalendarHelper extends DateHelper {
       // can appear in different places in the actual data structure so that
       // the data doesn't have to be repeated a lot. This essentially lets
       // each field have a cheap kind of inheritance.
-
       foreach ($data as $table => $table_data) {
         $bases = [];
         $strings = [];
         $skip_bases = [];
         foreach ($table_data as $field => $info) {
-          // Collect table data from this table
+          // Collect table data from this table.
           if ($field == 'table') {
-            // calculate what tables this table can join to.
+            // Calculate what tables this table can join to.
             if (!empty($info['join'])) {
               $bases = array_keys($info['join']);
             }
@@ -615,20 +633,20 @@ class CalendarHelper extends DateHelper {
                 continue;
               }
               foreach (['title', 'group', 'help', 'base', 'aliases'] as $string) {
-                // First, try the lowest possible level
+                // First, try the lowest possible level.
                 if (!empty($info[$key][$string])) {
                   $strings[$field][$key][$string] = $info[$key][$string];
                 }
-                // Then try the field level
+                // Then try the field level.
                 elseif (!empty($info[$string])) {
                   $strings[$field][$key][$string] = $info[$string];
                 }
-                // Finally, try the table level
+                // Finally, try the table level.
                 elseif (!empty($table_data['table'][$string])) {
                   $strings[$field][$key][$string] = $table_data['table'][$string];
                 }
                 else {
-                  if ($string != 'base' && $string != 'base') {
+                  if ($string != 'base') {
                     $strings[$field][$key][$string] = t("Error: missing @component", ['@component' => $string]);
                   }
                 }
@@ -646,7 +664,7 @@ class CalendarHelper extends DateHelper {
           }
         }
       }
-//    vsm('Views UI data build time: ' . (views_microtime() - $start) * 1000 . ' ms');
+      // vsm('Views UI data build time: ' . (views_microtime() - $start) * 1000 . ' ms');.
     }
 
     // If we have an array of base tables available, go through them
@@ -664,27 +682,28 @@ class CalendarHelper extends DateHelper {
     }
 
     // @todo find out if this hack is right
-//    if (isset($fields[$base][$type])) {
-//      uasort($fields[$base][$type], '_views_sort_types');
-//      return $fields[$base][$type];
-//    }
+    //   if (isset($fields[$base][$type])) {
+    //   uasort($fields[$base][$type], '_views_sort_types');
+    //   return $fields[$base][$type];
+    //   }
     $all_fields = [];
     foreach ($fields as $key => $field) {
       if ($base == substr($key, 0, strlen($base))) {
         if (isset($fields[$key][$type])) {
-//          uasort($fields[$key][$type], '_views_sort_types');
+          // uasort($fields[$key][$type], '_views_sort_types');.
           $all_fields = array_merge($all_fields, $fields[$key][$type]);
         }
       }
     }
     return $all_fields;
-//    return [];
+    // Return [];.
   }
 
   /**
    * Argument can be used as calendar argument.
    *
    * @param \Drupal\views\Plugin\views\argument\ArgumentPluginBase $arg
+   *   The argument base object.
    *
    * @return bool
    */
@@ -696,9 +715,10 @@ class CalendarHelper extends DateHelper {
    * Helper function to find the first date argument handler for this view.
    *
    * @param \Drupal\views\ViewExecutable $view
+   *   The view executable object.
    * @param null $display_id
    *
-   * @return \Drupal\calendar\DateArgumentWrapper|FALSE
+   * @return \Drupal\calendar\DateArgumentWrapper|false
    *   Returns the Date handler if one is found, or FALSE otherwise.
    */
   public static function getDateArgumentHandler(ViewExecutable $view, $display_id = NULL) {
@@ -750,7 +770,7 @@ class CalendarHelper extends DateHelper {
    * @return string
    *   The format string with all other elements removed.
    */
-  public static function limitFormat($format, $array) {
+  public static function limitFormat($format, array $array) {
     // If punctuation has been escaped, remove the escaping. Done using strtr()
     // because it is easier than getting the escape character extracted using
     // preg_replace().
@@ -774,21 +794,27 @@ class CalendarHelper extends DateHelper {
         case 'year':
           $regex[] = '([\-/\.,:]?\s?(?<!\\\\)[Yy])';
           break;
+
         case 'day':
           $regex[] = '([\-/\.,:]?\s?(?<!\\\\)[l|D|d|dS|j|jS|N|w|W|z]{1,2})';
           break;
+
         case 'month':
           $regex[] = '([\-/\.,:]?\s?(?<!\\\\)[FMmn])';
           break;
+
         case 'hour':
           $regex[] = '([\-/\.,:]?\s?(?<!\\\\)[HhGg])';
           break;
+
         case 'minute':
           $regex[] = '([\-/\.,:]?\s?(?<!\\\\)[i])';
           break;
+
         case 'second':
           $regex[] = '([\-/\.,:]?\s?(?<!\\\\)[s])';
           break;
+
         case 'timezone':
           $regex[] = '([\-/\.,:]?\s?(?<!\\\\)[TOZPe])';
           break;
@@ -811,8 +837,8 @@ class CalendarHelper extends DateHelper {
     // Trim any whitespace from the result.
     $format = trim($format);
 
-    // After removing the non-desired parts of the format, test if the only things
-    // left are escaped, non-date, characters. If so, return nothing.
+    // After removing the non-desired parts of the format, test if the only
+    // things left are escaped, non-date, characters. If so, return nothing.
     // Using S instead of w to pick up non-ASCII characters.
     $test = trim(preg_replace('(\\\\\S{1,3})', '', $format));
     if (empty($test)) {
@@ -826,11 +852,12 @@ class CalendarHelper extends DateHelper {
    * Get the display that handles a given granularity.
    *
    * @param \Drupal\views\ViewExecutable $view
+   *   The view executable service.
    * @param $granularity
    *
    * @return mixed
    */
-  static function getDisplayForGranularity(ViewExecutable $view, $granularity) {
+  public static function getDisplayForGranularity(ViewExecutable $view, $granularity) {
     $displays = &drupal_static(__FUNCTION__, []);
     $view_name = $view->id();
     if (!array_key_exists($view_name, $displays) || (isset($displays[$view->id()]) && !(array_key_exists($granularity, $displays[$view->id()])))) {
@@ -863,19 +890,20 @@ class CalendarHelper extends DateHelper {
    * @todo Allow a View to link to other Views by itself for a certain granularity.
    *
    * @param \Drupal\views\ViewExecutable $view
+   *   The view executable service.
    * @param $granularity
    * @param $arguments
    *
    * @return \Drupal\Core\Url|null
    */
-  static function getURLForGranularity(ViewExecutable $view, $granularity, $arguments) {
+  public static function getURLForGranularity(ViewExecutable $view, $granularity, $arguments) {
     $granularity_links = $view->getStyle()->options['granularity_links'];
     if ($granularity_links[$granularity]) {
-      /** @var RouteProvider $router */
+      /** @var \Drupal\Core\Routing\RouteProvider $router */
       $router = \Drupal::getContainer()->get('router.route_provider');
       $route_name = $granularity_links[$granularity];
       // Check if route exists. $router->getRoutesByName will throw error if no match.
-      $routes =$router->getRoutesByNames([$route_name]);
+      $routes = $router->getRoutesByNames([$route_name]);
       if ($routes) {
         return Url::fromRoute($route_name, static::getViewRouteParameters($arguments));
       }
@@ -893,27 +921,31 @@ class CalendarHelper extends DateHelper {
    * Get the Url object to link to a View display with given arguments.
    *
    * @param \Drupal\views\ViewExecutable $view
+   *   The view executable service.
    * @param $display_id
    * @param array $args
    *
    * @return \Drupal\Core\Url
+   *   Returns url.
    */
-  static function getViewsURL(ViewExecutable $view, $display_id, $args = []) {
+  public static function getViewsURL(ViewExecutable $view, $display_id, array $args = []) {
     $route_name = static::getDisplayRouteName($view->id(), $display_id);
     $route_parameters = static::getViewRouteParameters($args, $route_name);
     return Url::fromRoute($route_name, $route_parameters);
   }
 
   /**
-   * Get Route name for a display
+   * Get Route name for a display.
    *
-   * Not sure where is documented but the route names are made in \Drupal\views\EventSubscriber\RouteSubscriber
+   * Not sure where is documented but the route names are made
+   * in \Drupal\views\EventSubscriber\RouteSubscriber.
+   *
    * @param $view_id
    * @param $display_id
    *
    * @return string
    */
-  static function getDisplayRouteName($view_id, $display_id) {
+  public static function getDisplayRouteName($view_id, $display_id) {
     return 'view.' . $view_id . '.' . $display_id;
   }
 
@@ -924,7 +956,7 @@ class CalendarHelper extends DateHelper {
    *
    * @return array
    */
-  static function getViewRouteParameters($args, $route_name) {
+  public static function getViewRouteParameters($args, $route_name) {
     $provider = \Drupal::service('router.route_provider');
     $route = $provider->getRouteByName($route_name);
     $map = $route->getOption('_view_argument_map');
@@ -952,7 +984,7 @@ class CalendarHelper extends DateHelper {
    *   An associative array of argument values keyed by the "arg_" prefix
    *   followed by the URL position.
    */
-  static function getViewArgumentValues(ViewExecutable $view, $value, $argument_handler = NULL) {
+  public static function getViewArgumentValues(ViewExecutable $view, $value, $argument_handler = NULL) {
     $arg_values = [];
     if (!isset($argument_handler)) {
       $argument_handler = static::getDateArgumentHandler($view);

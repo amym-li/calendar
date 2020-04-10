@@ -1,3 +1,7 @@
+/**
+ * @file
+ */
+
 (function ($) {
   'use strict';
 

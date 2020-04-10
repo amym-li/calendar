@@ -4,6 +4,7 @@
  * @file
  * Theme functions for the Calendar module.
  */
+
 use Drupal\calendar\CalendarHelper;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Datetime\Entity\DateFormat;
@@ -21,7 +22,7 @@ function template_preprocess_calendar_month(&$vars) {
     $rows = [];
     $day_names = [];
   }
-  elseif (sizeof($rows) > 1) {
+  elseif (count($rows) > 1) {
     $day_names = array_shift($rows);
   }
   else {
@@ -84,7 +85,7 @@ function template_preprocess_calendar_mini(&$vars) {
   // Make sure that the calendar title links go to the month view,
   // not the year view (if this is embedded in a year display).
   $full_date_arg = str_replace('-', '', $date);
-  $view->override_path =  CalendarHelper::getURLForGranularity($view, 'month', [$full_date_arg]);
+  $view->override_path = CalendarHelper::getURLForGranularity($view, 'month', [$full_date_arg]);
 
   $view->date_info->show_title = !empty($view->date_info->show_title) ? $view->date_info->show_title : FALSE;
   $vars['show_title'] = $view->date_info->show_title;
@@ -114,8 +115,8 @@ function template_preprocess_calendar_year(&$vars) {
     $view->styleInfo->setShowNavigation(FALSE);
     $view->styleInfo->setShowTitle(TRUE);
     // TODO implement
-//    $view->dateInfo->url = date_pager_url($view, NULL, \Drupal\Component\Datetime\DateTimePlus::datePad($year, 4) . '-' . \Drupal\Component\Datetime\DateTimePlus::datePad($month));
-    // TODO handle timezone
+    // $view->dateInfo->url = date_pager_url($view, NULL, \Drupal\Component\Datetime\DateTimePlus::datePad($year, 4) . '-' . \Drupal\Component\Datetime\DateTimePlus::datePad($month));
+    // TODO handle timezone.
     $view->dateInfo->setMinDate(new DateTime($view->dateInfo->getMinYear() . '-' . DateTimePlus::datePad($month) . '-01 00:00:00', new DateTimeZone('europe/brussels')));
     $maxDate = clone($view->dateInfo->getMinDate());
     $maxDate->modify('+1 month');
@@ -333,7 +334,7 @@ function template_preprocess_calendar_day(&$vars) {
 
   $vars['first_column_width'] = $first_column_width;
   if (count($columns)) {
-    $vars['column_width'] = round((100 - $first_column_width)/count($columns));
+    $vars['column_width'] = round((100 - $first_column_width) / count($columns));
   }
   else {
     $vars['column_width'] = (100 - $first_column_width);
@@ -363,7 +364,7 @@ function template_preprocess_calendar_week(&$vars) {
   $start_time = NULL;
   $columns = [];
 
-  if (sizeof($rows) > 1) {
+  if (count($rows) > 1) {
     $day_names = array_shift($rows);
   }
   else {
@@ -380,13 +381,13 @@ function template_preprocess_calendar_week(&$vars) {
   // Pass the multiday buckets.
   $vars['all_day'] = $rows['multiday_buckets'];
 
-  // Remove the count for singleday
+  // Remove the count for singleday.
   $vars['multiday_rows'] = max(0, $rows['total_rows'] - 1);
   $display_overlap = ($view->styleInfo->getMultiDayTheme() == '1' && !empty($view->styleInfo->getThemeStyle()));
   $vars['display_overlap'] = $display_overlap;
   $vars['scroll_content'] = !empty($view->styleInfo->getThemeStyle()) && $view->styleInfo->getThemeStyle() == 1;
 
-  // Add optional css
+  // Add optional css.
   if ($display_overlap) {
 
     $vars['#attached']['library'][] = 'calendar/calendar.overlapcss';
@@ -399,14 +400,14 @@ function template_preprocess_calendar_week(&$vars) {
 
     $overlapped_items = [[], [], [], [], [], [], []];
 
-    // Locate the first item
+    // Locate the first item.
     $first_time = '23:59:59';
     $first_time_index = -1;
     for ($i = 0; $i < 7; $i++) {
       if (count($rows['singleday_buckets'][$i]) > 0) {
         $time_slot = reset($rows['singleday_buckets'][$i]);
         // TODO item should not be empty at this point, find out why empty days
-        // get to this point, fix that, and remove this hack
+        // get to this point, fix that, and remove this hack.
         if (isset($time_slot[0]['item'])) {
           $time = date_format($time_slot[0]['item']->getStartDate(), 'H:i:s');
           if ($time < $first_time) {
@@ -424,7 +425,7 @@ function template_preprocess_calendar_week(&$vars) {
   // If we're not grouping by time, move all items into the 'all day' array.
   if (empty($view->styleInfo->getGroupByTimes())) {
     $add_row = FALSE;
-    foreach ($vars['all_day'] as $index => &$day ) {
+    foreach ($vars['all_day'] as $index => &$day) {
       foreach ($rows['singleday_buckets'][$index] as $item) {
         foreach ($item as $event) {
           $day[] = $event;
@@ -444,11 +445,11 @@ function template_preprocess_calendar_week(&$vars) {
         $start_time = array_shift($start_times);
         $next_start_time = count($start_times) ? array_shift($start_times) : $end_start_time;
         foreach ($row as &$item) {
-          // todo find out how empty days should be handled properly
+          // Todo find out how empty days should be handled properly.
           if ($item['entry']['#theme'] === 'calendar_empty_day') {
             continue;
           }
-          // todo find out what to do when the item is no event
+          // Todo find out what to do when the item is no event.
           if (!is_object($item['item'])) {
             continue;
           }
@@ -521,11 +522,11 @@ function template_preprocess_calendar_week(&$vars) {
           if ($display_overlap) {
             $group_time = NULL;
             $divisor = NULL;
-            if ($view->styleInfo->getGroupByTimes() == 'half'){
+            if ($view->styleInfo->getGroupByTimes() == 'half') {
               $group_time = 30;
               $divisor = 7.5;
             }
-            elseif ($view->styleInfo->getGroupByTimes() == 'hour'){
+            elseif ($view->styleInfo->getGroupByTimes() == 'hour') {
               $group_time = 60;
               $divisor = 15;
             }
@@ -599,23 +600,21 @@ function template_preprocess_calendar_datebox(&$vars) {
   $vars['day'] = intval(substr($date, 8, 2));
   $vars['mini'] = !empty($view->styleInfo->isMini());
   $link_to_day = !empty($view->style_plugin->options["link_to_date"]);
-  //  $force_view_url = !empty($view->dateInfo->block) ? TRUE : FALSE;
-
+  // $force_view_url = !empty($view->dateInfo->block) ? TRUE : FALSE;
   $full_date_arg = str_replace('-', '', $date);
   $day_url = CalendarHelper::getURLForGranularity($view, 'day', [$full_date_arg]);
-//  $vars['url'] = str_replace([$month_path, $year_path], $day_path, date_pager_url($view, NULL, $date, $force_view_url));
+  // $vars['url'] = str_replace([$month_path, $year_path], $day_path, date_pager_url($view, NULL, $date, $force_view_url));
   if ($day_url) {
-    if (!$link_to_day){
+    if (!$link_to_day) {
       $vars['link'] = $vars['day'];
-    } else {
+    }
+    else {
       $vars['link'] = Link::fromTextAndUrl($vars['day'], $day_url)->toString();
     }
   }
   else {
     $vars['link'] = $vars['day'];
   }
-
-
 
   $vars['granularity'] = $view->dateInfo->getGranularity();
   if ($vars['mini']) {
@@ -642,17 +641,17 @@ function template_preprocess_calendar_month_multiple_entity(&$vars) {
   $ids = $vars['ids'];
   $date = $vars['date'];
 
-  // get the year month and date
+  // Get the year month and date.
   $parts = explode('-', substr($curday, 0, 10));
   $year = $parts[0];
   $month = intval($parts[1]);
   $day = intval($parts[2]);
 
-  // create the link to the day
+  // Create the link to the day.
   $full_date_arg = str_replace('-', '', $date);
   $month_path = CalendarHelper::getURLForGranularity($view, 'month', [$full_date_arg]);
   $day_path = CalendarHelper::getURLForGranularity($view, 'day', [$full_date_arg]);
-  $vars['link'] = str_replace($month_path, $day_path, date_pager_url($view, NULL, \Drupal\Component\Datetime\DateTimePlus::datePad($year, 4) . '-' . \Drupal\Component\Datetime\DateTimePlus::datePad($month) . '-' . \Drupal\Component\Datetime\DateTimePlus::datePad($day)));
+  $vars['link'] = str_replace($month_path, $day_path, date_pager_url($view, NULL, DateTimePlus::datePad($year, 4) . '-' . DateTimePlus::datePad($month) . '-' . DateTimePlus::datePad($day)));
 }
 
 /**
@@ -669,7 +668,7 @@ function template_preprocess_calendar_month_multiple_entity(&$vars) {
 /**
  * Format the time row headings in the week and day view.
  *
- * TODO find out if this should be helper function instead of a preprocessor
+ * TODO find out if this should be helper function instead of a preprocessor.
  */
 function template_preprocess_calendar_time_row_heading($vars) {
   $start_time = $vars['start_time'];
@@ -722,13 +721,16 @@ function template_preprocess_calendar_time_row_heading($vars) {
 /**
  * Format a node stripe legend.
  *
- * @param $vars array
+ * @param array $vars
  *   An array with variables.
  *
  * @return string
  *   The HTML output of the legend.
+ *
+ * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+ * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
  */
-function template_preprocess_calendar_stripe_legend(&$vars) {
+function template_preprocess_calendar_stripe_legend(array &$vars) {
 
   if (empty($vars) || !$view = $vars['view_and_display_id']) {
     return '';
@@ -764,7 +766,7 @@ function template_preprocess_calendar_stripe_legend(&$vars) {
 
   $headers = [
     ['label' => t('Item')],
-    ['label' => t('Key')]
+    ['label' => t('Key')],
   ];
 
   $rows = [];
@@ -788,29 +790,30 @@ function template_preprocess_calendar_stripe_legend(&$vars) {
  * Indent items based off a nested tree structure of overlapping items.
  *
  * @param array $overlapped_items
- *   Tree of overlapped items
+ *   Tree of overlapped items.
  * @param date $start
- *   Start time of the event
+ *   Start time of the event.
  * @param date $end
- *   End tiem of the event
+ *   End tiem of the event.
  * @param array $item
- *   The event to add to the tree
+ *   The event to add to the tree.
  * @param int $depth
- *   Current depth of the tree
+ *   Current depth of the tree.
+ *
  * @return rc
  *   Returns an array with the max depth of the branch and whether an overlap
  *   occurred.
  */
-function _calc_indents(&$overlapped_items, $start, $end, &$item, $depth = 0) {
+function _calc_indents(array &$overlapped_items, $start, $end, array &$item, $depth = 0) {
 
   // Are there any items at this depth?
   if (!empty($overlapped_items)) {
 
-    // Iterate for each item as this depth and see if we overlap
+    // Iterate for each item as this depth and see if we overlap.
     foreach ($overlapped_items as $index => &$entry) {
 
       // We search depth-first, so if there are children for this item, recurse into
-      // each child tree looking for an overlap
+      // each child tree looking for an overlap.
       if (!empty($entry['children'])) {
         $rc = _calc_indents($entry['children'], $start, $end, $item, $depth + 1);
 
@@ -825,14 +828,14 @@ function _calc_indents(&$overlapped_items, $start, $end, &$item, $depth = 0) {
             $entry['item']['max_depth'] = $rc['max_depth'];
           }
 
-          // There was an overlap, pop out of this depth
+          // There was an overlap, pop out of this depth.
           return $rc;
         }
       }
-      // No, child overlap, so check if we overlap this item
+      // No, child overlap, so check if we overlap this item.
       if ($start >= $entry['start'] && $start < $entry['end']) {
 
-        // We overlap, create an overlapping entry
+        // We overlap, create an overlapping entry.
         $entry['children'][] = ['item' => &$item, 'depth' => $depth + 1, 'start' => $start, 'end' => $end, 'children' => []];
         if (is_object($entry['item'])) {
           $max_depth = max($entry['item']->max_depth, $depth + 1);
@@ -853,19 +856,19 @@ function _calc_indents(&$overlapped_items, $start, $end, &$item, $depth = 0) {
           $item['max_depth'] = $max_depth;
         }
 
-        // We overlap, so pop out of this depth
+        // We overlap, so pop out of this depth.
         return ['overlap' => TRUE, 'max_depth' => $max_depth];
       }
     }
 
     // If there are items at this depth, but no overlap, then return no overlap and pop
-    // out of this depth
+    // out of this depth.
     if ($depth > 0) {
       return ['overlap' => FALSE, 'max_depth' => 0];
     }
   }
 
-  // No overlap at any depth, reset the array of overlaps
+  // No overlap at any depth, reset the array of overlaps.
   if ($depth == 0) {
     reset($overlapped_items);
     $overlapped_items[0] = ['item' => &$item, 'depth' => $depth, 'start' => $start, 'end' => $end, 'children' => []];
@@ -890,11 +893,16 @@ function _calc_indents(&$overlapped_items, $start, $end, &$item, $depth = 0) {
  * in the tree.
  *
  * @param int $cur_depth
+ *   Current depth to calculate indent.
  * @param int $depth
- * @return number
+ *   Depth of this branch.
+ *
+ * @return int
+ *  Returns the calculated value in int.
  */
-function _calc_indent( $cur_depth, $depth ) {
+function _calc_indent($cur_depth, $depth) {
   return round(10 * $cur_depth / ($depth + 1));
 }
 
-/** @} End of addtogroup themeable */
+/**
+ * @} End of addtogroup themeable */

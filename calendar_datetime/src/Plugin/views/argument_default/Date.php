@@ -76,7 +76,7 @@ class Date extends ArgumentDefaultPluginBase implements CacheableDependencyInter
 
     // The Date argument handlers provide their own format strings, otherwise
     // use a default.
-    if ($argument instanceof \Drupal\datetime\Plugin\views\argument\Date) {
+    if ($argument instanceof Date) {
       /** @var \Drupal\views\Plugin\views\argument\Date $argument */
       $format = $argument->getArgFormat();
     }
@@ -102,4 +102,5 @@ class Date extends ArgumentDefaultPluginBase implements CacheableDependencyInter
   public function getCacheMaxAge() {
     return 0;
   }
+
 }

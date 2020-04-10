@@ -74,8 +74,8 @@ class CalendarHeader extends TokenizeAreaPluginBase {
 
           // Override the exclude option of the pager.
           if (is_array($render)) {
-           $render['#exclude'] = FALSE;
-           $render['#items']['current'] = $header_text;
+            $render['#exclude'] = FALSE;
+            $render['#items']['current'] = $header_text;
           }
         }
       }

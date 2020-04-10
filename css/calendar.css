@@ -1,7 +1,8 @@
 /**
  * Calendar calendar table styles.
  */
-.calendar-calendar tr.odd, .calendar-calendar tr.even {
+.calendar-calendar tr.odd,
+.calendar-calendar tr.even {
   background-color: #fff;
 }
 .calendar-calendar table {
@@ -66,7 +67,7 @@
  */
 .calendar-calendar .mini {
   border: none;
- }
+}
 
 /**
  * Format for the week number in the first cell.
@@ -74,7 +75,7 @@
 .calendar-calendar td.week {
   width: 1%;
   min-width: 1%;
-  }
+}
 .calendar-calendar .week {
   clear: both;
   font-style: normal;
@@ -129,7 +130,7 @@
   text-align: center;
   padding: 1px;
   margin: 0;
- }
+}
 
 /**
  * Floating day number div.
@@ -142,8 +143,8 @@
   background-color: #f3f3f3;
   border: 1px solid gray;
   border-width: 0 0 1px 1px;
-  clear:both;
-  width:1.5em;
+  clear: both;
+  width: 1.5em;
 }
 
 /**
@@ -153,7 +154,7 @@
   background-color: #fff;
   border: solid 1px #ddd;
   text-align: left;
-  margin:0 .25em .25em 0;
+  margin: 0 .25em .25em 0;
   width: 96%;
   float: right; /* needed to keep IE from hiding the floating day number */
   clear: both;
@@ -180,8 +181,7 @@
 }
 .calendar-calendar .content {
   clear: both;
-  padding: 3px;
-  padding-left: 5px;
+  padding: 3px 3px 3px 5px;
 }
 .calendar div.form-item {
   white-space: normal;
@@ -215,7 +215,7 @@ table .mini-day-on a {
   width: 100%;
   border: none;
 }
-.mini{
+.mini {
   width: 32%;
   vertical-align: top;
 }
@@ -224,7 +224,7 @@ table .mini-day-on a {
  * Formatting for the legend stripe and block.
  */
 .calendar-calendar .stripe {
-  height:  5px;
+  height: 5px;
   width: auto;
   font-size: 1px !important;
   line-height: 1px !important;
@@ -390,7 +390,7 @@ table.calendar-legend tr.even .stripe {
 .calendar-calendar tr td.today,
 .calendar-calendar tr.odd td.today,
 .calendar-calendar tr.even td.today {
-  background-color: #C3D6E4;
+  background-color: #c3d6e4;
 }
 .calendar-calendar td .inner div.calendar div div.view-data-node-data-field-date-field-date-value {
   border-bottom: 1px solid #ccc;
@@ -401,7 +401,11 @@ nav.pager > ul {
 /**
  * The following are not used by default but are available for themes.
  */
-.calendar-calendar td.past {}
-.calendar-calendar td.future {}
-.calendar-calendar td.has-events {}
-.calendar-calendar td.has-no-events {}
+.calendar-calendar td.past {
+}
+.calendar-calendar td.future {
+}
+.calendar-calendar td.has-events {
+}
+.calendar-calendar td.has-no-events {
+}

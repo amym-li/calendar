@@ -1,4 +1,3 @@
-
 .calendar-calendar .week-view #multi-day-container,
 .calendar-calendar .week-view #single-day-container,
 .calendar-calendar .day-view #multi-day-container,
@@ -6,7 +5,7 @@
   overflow-y: hidden;
   overflow-x: hidden;
 }
- .calendar-calendar .week-view #single-day-container,
- .calendar-calendar .day-view #single-day-container {
+.calendar-calendar .week-view #single-day-container,
+.calendar-calendar .day-view #single-day-container {
   height: auto;
 }

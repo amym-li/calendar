@@ -1,6 +1,8 @@
-/*
- *  Create the splitter, set the viewport size, and set the position of the scrollbar to the first item.
+/**
+ * @file
+ * Create the splitter, set the viewport size, and set the position of the scrollbar to the first item.
  */
+
 (function ($) {
   'use strict';
 
@@ -8,12 +10,12 @@
     attach: function (context) {
       $('#single-day-container').css('visibility', 'hidden');
 
-    // Make multi-day resizable - stolen/borrowed from textarea.js
+    // Make multi-day resizable - stolen/borrowed from textarea.js.
       $('.header-body-divider:not(.header-body-divider-processed)').each(function () {
         var divider = $(this).addClass('header-body-divider-processed');
         var start_y = divider.offset().top;
 
-      // Add the grippie icon
+      // Add the grippie icon.
         $(this).prepend('<div class="grippie"></div>').mousedown(startDrag);
 
         function startDrag(e) {
@@ -44,7 +46,7 @@
         var divider = $(this).addClass('single-day-footer-processed');
         var start_y = divider.offset().top;
 
-      // Add the grippie icon
+      // Add the grippie icon.
         $(this).prepend('<div class="grippie"></div>').mousedown(startDrag);
 
         function startDrag(e) {
@@ -71,7 +73,7 @@
 
       $('#single-day-container').css('visibility', 'visible');
 
-    // Scroll the viewport to the first item
+    // Scroll the viewport to the first item.
       function calendar_scrollToFirst() {
         if ($('div.first_item').length > 0) {
           var y = $('div.first_item').offset().top - $('#single-day-container').offset().top;
@@ -79,13 +81,13 @@
         }
       }
 
-    // Size the single day view
+    // Size the single day view.
       function calendar_resizeViewport() {
-      // Size of the browser window
+      // Size of the browser window.
         var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
         var top = $('#single-day-container').offset().top;
 
-      // Give it a 20 pixel margin at the bottom
+      // Give it a 20 pixel margin at the bottom.
         $('#single-day-container').height(viewportHeight - top - 20);
       }
     }

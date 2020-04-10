@@ -5,9 +5,14 @@ namespace Drupal\calendar;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\views\Views;
 
+/**
+ * The trait.
+ */
 trait CalendarViewsTrait {
 
-
+  /**
+   * {@inheritDoc}
+   */
   protected function getTableEntityType($table) {
     static $recursion = 0;
     if ($table = Views::viewsData()->get($table)) {
@@ -34,6 +39,7 @@ trait CalendarViewsTrait {
    *
    * @param $field_info
    * @param \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager
+   *   The entity field manager service.
    */
   protected function isTermReferenceField($field_info, EntityFieldManagerInterface $field_manager) {
     if (!empty($field_info['type']) && $field_info['type'] == 'entity_reference_label') {
