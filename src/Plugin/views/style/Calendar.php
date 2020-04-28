@@ -82,8 +82,7 @@ class Calendar extends StylePluginBase {
   protected $styleInfo;
 
   /**
-   * The calendar items contains the keys for the start date and the start time
-   * of the event.
+   * Calendar items contains the keys for the start date and time of the event.
    *
    * @var array
    *
@@ -469,25 +468,13 @@ class Calendar extends StylePluginBase {
    */
   public function validateOptionsForm(&$form, FormStateInterface $form_state) {
     $groupby_times = $form_state->getValue(['style_options', 'groupby_times']);
-    if ($groupby_times == 'custom' && $form_state->isValueEmpty([
-      'style_options',
-      'groupby_times_custom',
-    ])) {
+    if ($groupby_times == 'custom' && $form_state->isValueEmpty(['style_options', 'groupby_times_custom'])) {
       $form_state->setErrorByName('groupby_times_custom', $this->t('Custom groupby times cannot be empty.'));
     }
-    if ((!$form_state->isValueEmpty([
-      'style_options',
-      'theme_style',
-    ]) && empty($groupby_times)) || !in_array($groupby_times, [
-      'hour',
-      'half',
-    ])) {
+    if (!$form_state->isValueEmpty(['style_options', 'theme_style']) && (empty($groupby_times) || !in_array($groupby_times, ['hour', 'half']))) {
       $form_state->setErrorByName('theme_style', $this->t('Overlapping items only work with hour or half hour groupby times.'));
     }
-    if (!$form_state->isValueEmpty([
-      'style_options',
-      'theme_style',
-    ]) && !$form_state->isValueEmpty(['style_options', 'group_by_field'])) {
+    if (!$form_state->isValueEmpty(['style_options', 'theme_style']) && !$form_state->isValueEmpty(['style_options', 'group_by_field'])) {
       $form_state->setErrorByName('theme_style', $this->t('ou cannot use overlapping items and also try to group by a field value.'));
     }
     if ($groupby_times != 'custom') {
@@ -589,7 +576,7 @@ class Calendar extends StylePluginBase {
     // TODO make this an option setting.
     $this->styleInfo->setShowEmptyTimes(!empty($this->options['groupby_times_custom']) ? TRUE : FALSE);
 
-    // Set up parameters for the current view that can be used by the row plugin.
+    // Set up parameters for the current view that can be used by row plugin.
     $display_timezone = date_timezone_get($this->dateInfo->getMinDate());
     $this->dateInfo->setTimezone($display_timezone);
 
@@ -627,7 +614,7 @@ class Calendar extends StylePluginBase {
     $this->currentDay = clone($this->dateInfo->getMinDate());
     $this->items = $items;
 
-    // Retrieve the results array using a the right method for the granularity of the display.
+    // Retrieve results array using method for the granularity of the display.
     switch ($this->options['calendar_type']) {
       case 'year':
         $rows = [];
@@ -662,7 +649,7 @@ class Calendar extends StylePluginBase {
     if ($this->options['calendar_type'] == 'month' && !empty($this->styleInfo->isMini())) {
       $this->definition['theme'] = 'calendar_mini';
     }
-    // If the overlap option was selected, choose the overlap version of the theme.
+    // If the overlap option was selected, choose overlap version of the theme.
     elseif (in_array($this->options['calendar_type'], [
       'week',
       'day',
@@ -1223,12 +1210,13 @@ class Calendar extends StylePluginBase {
                   // current month or week, truncate the remaining days.
                   $diff = CalendarHelper::difference($this->currentDay, $this->dateInfo->getMaxDate(), 'days');
                   $remaining_days = ($this->dateInfo->getGranularity() == 'month') ? min(6 - $wday, $diff) : $diff - 1;
-                  // The bucket_cnt defines the colspan.  colspan = bucket_cnt + 1.
+                  // The bucket_cnt defines colspan. colspan = bucket_cnt + 1.
                   $days = CalendarHelper::difference($this->currentDay, $item->getEndDate(), 'days');
                   $bucket_cnt = max(0, min($days, $remaining_days));
 
-                  // See if there is an available slot to add an event.  This will allow
-                  // an event to precede a row filled up by a previous day event.
+                  // See if there is an available slot to add an event.
+                  // This will allow an event to precede a row filled up by a
+                  // previous day event.
                   $bucket_index = count($multiday_buckets[$wday]);
                   for ($i = 0; $i < $bucket_index; $i++) {
                     if ($multiday_buckets[$wday][$i]['avail']) {
@@ -1382,7 +1370,8 @@ class Calendar extends StylePluginBase {
         '#view' => $this->view,
       ];
     }
-    // We have hidden events on this day, use the theme('calendar_multiple_') to show a link.
+    // We have hidden events on this day, use the theme('calendar_multiple_')
+    // to show a link.
     if ($max_events != CALENDAR_SHOW_ALL && $count > 0 && $count > $max_events && $this->dateInfo->getCalendarType() != 'day' && !$this->styleInfo->isMini()) {
       if ($this->styleInfo->getMaxItemsStyle() == 'hide' || $max_events == CALENDAR_HIDE_ALL) {
         $all_day = [];
@@ -1434,12 +1423,13 @@ class Calendar extends StylePluginBase {
   }
 
   /**
-   * Get select options for Views displays that support Calendar with set
-   * granularity.
+   * Get options for Views displays that support Calendar with set granularity.
    *
    * @param mixed $granularity
+   *   Set Granularity Option.
    *
    * @return array
+   *   An array with information of the option for the Views displays.
    */
   protected function viewOptionsForGranularity($granularity) {
     $options = [];
