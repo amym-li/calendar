@@ -279,7 +279,7 @@ class Calendar extends RowPluginBase {
         $vocab = \Drupal::entityTypeManager()->getStorage("taxonomy_term")->loadTree($vid);
         foreach ($vocab as $key => $term) {
           $form['colors']['calendar_colors_taxonomy'][$term->tid] = [
-            '#title' => $this->t($term->name),
+            '#title' => $this->t('@term_name', ['@term_name' => $term->name]),
             '#default_value' => isset($term_colors[$term->tid]) ? $term_colors[$term->tid] : CALENDAR_EMPTY_STRIPE,
             '#access' => !empty($vocabulary_field_options),
             '#dependency_count' => 2,
@@ -310,8 +310,13 @@ class Calendar extends RowPluginBase {
 
   /**
    * Check to make sure the user has entered a valid 6 digit hex color.
+   *
+   * @param array $element
+   *   Element to validate.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   State of the form.
    */
-  public function validateHexColor($element, FormStateInterface $form_state) {
+  public function validateHexColor(array $element, FormStateInterface $form_state) {
     if (!$element['#required'] && empty($element['#value'])) {
       return;
     }
@@ -341,7 +346,9 @@ class Calendar extends RowPluginBase {
 
       // Node revisions need special loading.
       if (isset($this->view->getBaseTables()['node_revision'])) {
-        $this->entities[$entity->id()] = \Drupal::entityTypeManager()->getStorage('node')->loadRevision($entity->id());
+        $this->entities[$entity->id()] = \Drupal::entityTypeManager()
+          ->getStorage('node')
+          ->loadRevision($entity->id());
       }
       else {
         $ids[$entity->id()] = $entity->id();
@@ -353,7 +360,9 @@ class Calendar extends RowPluginBase {
     $this->entityType = $table_data['table']['entity type'];
 
     if (!empty($ids)) {
-      $this->entities = \Drupal::entityTypeManager()->getStorage($this->entityType)->loadMultiple($ids);
+      $this->entities = \Drupal::entityTypeManager()
+        ->getStorage($this->entityType)
+        ->loadMultiple($ids);
     }
 
     // Identify the date argument and fields that apply to this view. Preload
@@ -381,12 +390,13 @@ class Calendar extends RowPluginBase {
       }
     }
     //
-    //    // Get the language for this view.
-    //    $this->language = $this->display->handler->get_option('field_language');
+    //    Get the language for this view.
+    //    $this->language = $this->display->handler
+    //    ->get_option('field_language');
     //    $substitutions = views_views_query_substitutions($this->view);
     //    if (array_key_exists($this->language, $substitutions)) {
     //    $this->language = $substitutions[$this->language];
-    //    }
+    //    }.
   }
 
   /**
@@ -402,8 +412,9 @@ class Calendar extends RowPluginBase {
       return [];
     }
 
-    // Unrelated to end date: this addresses issue where an entity on a calendar is duplicated
-    // if it has multiple entity references; ensure that the calendar entity is only displayed once.
+    // Unrelated to end date: this addresses issue where an entity on a calendar
+    // is duplicated if it has multiple entity references; ensure that the
+    // calendar entity is only displayed once.
     static $used = '';
     if ($id != $used) {
       $used = $id;
@@ -428,8 +439,8 @@ class Calendar extends RowPluginBase {
 
       $event = new CalendarEvent($entity);
 
-      // Retrieve the field value(s) that matched our query from the cached node.
-      // Find the date and set it to the right timezone.
+      // Retrieve the field value(s) that matched our query
+      // from the cached node. Find the date and set it to the right timezone.
       $entity->date_id = [];
       $item_start_date = NULL;
       $item_end_date   = NULL;
@@ -452,86 +463,94 @@ class Calendar extends RowPluginBase {
           $storage_format = DateTimeItemInterface::DATETIME_STORAGE_FORMAT;
         }
       }
-      $item = $entity->get($field_name)->getValue();
+      $items = $entity->get($field_name)->getValue();
       // // @todo handle timezones
       $timezone = new \DateTimeZone(DateTimeItemInterface::STORAGE_TIMEZONE);
-      // $db_tz   = date_get_timezone_db($tz_handling, isset($item->$tz_field) ? $item->$tz_field : timezone_name_get($dateInfo->getTimezone()));
-      // $to_zone = date_get_timezone($tz_handling, isset($item->$tz_field) ? $item->$tz_field : timezone_name_get($dateInfo->getTimezone()));
+      // $db_tz   = date_get_timezone_db($tz_handling, isset($item->$tz_field)
+      // ? $item->$tz_field : timezone_name_get($dateInfo->getTimezone()));
+      // $to_zone = date_get_timezone($tz_handling, isset($item->$tz_field)
+      // ? $item->$tz_field : timezone_name_get($dateInfo->getTimezone()));
       // $item_start_date = new dateObject($item, $db_tz);
       $event_date_value = (isset($row->{$info['query_name']})) ? $row->{$info['query_name']} : $row->_entity->get($entity_field_name)->getString();
-      if (isset($item[0])) {
-        $item_start_date = \DateTime::createFromFormat($storage_format, $item[0]['value'], $timezone);
-      }
-      if (isset($item[0]) && !empty($item[0]['end_value'])) {
-        $item_end_date = \DateTime::createFromFormat($storage_format, $item[0]['end_value'], $timezone);
-      }
-      else {
-        $item_end_date = $item_start_date;
-      }
-      $entity->date_id = ['calendar.' . $id . '.' . $field_name . '.0'];
-
-      // If we don't have a date value, go no further.
-      if (empty($item_start_date)) {
-        continue;
-      }
-
-      // Set the item date to the proper display timezone;.
-      // @todo handle timezones
-      //   $item_start_date->setTimezone(new dateTimezone($to_zone));
-      //   $item_end_date->setTimezone(new dateTimezone($to_zone));
-      $event->setStartDate($item_start_date);
-      $event->setEndDate($item_end_date);
-      $event->setTimezone(new \DateTimeZone(timezone_name_get($dateInfo->getTimezone())));
-      $event->setGranularity($granularity);
-
-      // @todo remove while properties get transfered to the new object
-      //   $event_container = new stdClass();
-      //   $event_container->db_tz = $db_tz;
-      //   $event_container->to_zone = $to_zone;
-      //   $event_container->increment = $increment;
-      //   $event_container->field = $is_field ? $item : NULL;
-      //   $event_container->row = $row;
-      //   $event_container->entity = $entity;
-      // All calendar row plugins should provide a date_id that the theme can use.
-      // @todo implement
-      $event->date_id = $entity->date_id[0];
-
-      // We are working with an array of partially rendered items
-      // as we process the calendar, so we can group and organize them.
-      // At the end of our processing we'll need to swap in the fully formatted
-      // display of the row. We save it here and switch it in
-      // template_preprocess_calendar_item().
-      // @FIXME
-      // theme() has been renamed to _theme() and should NEVER be called directly.
-      // Calling _theme() directly can alter the expected output and potentially
-      // introduce security issues (see https://www.drupal.org/node/2195739).
-      // You should use renderable arrays instead.
-      //
-      //
-      // @see https://www.drupal.org/node/2195739
-      // $event->rendered = theme($this->theme_functions(),
-      // [
-      // 'view' => $this->view,
-      // 'options' => $this->options,
-      // 'row' => $row,
-      // 'field_alias' => isset($this->field_alias) ? $this->field_alias : '',
-      // ]);
-      /** @var \Drupal\calendar\CalendarEvent[] $events */
-      $events = $this->explode_values($event);
-      foreach ($events as $event) {
-        switch ($this->options['colors']['legend']) {
-          case 'type':
-            if ($event->getEntityTypeId() == 'node') {
-              $this->nodeTypeStripe($event);
-            }
-
-            break;
-
-          case 'taxonomy':
-            $this->calendarTaxonomyStripe($event);
-            break;
+      foreach ($items as $item) {
+        // For each date on the entity create a new event in the calendar.
+        $event = clone $event;
+        if (isset($item)) {
+          $item_start_date = \DateTime::createFromFormat($storage_format, $item['value'], $timezone);
         }
-        $rows[] = $event;
+        if (isset($item) && !empty($item['end_value'])) {
+          $item_end_date = \DateTime::createFromFormat($storage_format, $item['end_value'], $timezone);
+        }
+        else {
+          $item_end_date = $item_start_date;
+        }
+        $entity->date_id = ['calendar.' . $id . '.' . $field_name . '.0'];
+
+        // If we don't have a date value, go no further.
+        if (empty($item_start_date)) {
+          continue;
+        }
+
+        // Set the item date to the proper display timezone;.
+        // @todo handle timezones
+        //   $item_start_date->setTimezone(new dateTimezone($to_zone));
+        //   $item_end_date->setTimezone(new dateTimezone($to_zone));
+        $event->setStartDate($item_start_date);
+        $event->setEndDate($item_end_date);
+        $event->setTimezone(new \DateTimeZone(timezone_name_get($dateInfo->getTimezone())));
+        $event->setGranularity($granularity);
+
+        // @todo remove while properties get transfered to the new object
+        //   $event_container = new stdClass();
+        //   $event_container->db_tz = $db_tz;
+        //   $event_container->to_zone = $to_zone;
+        //   $event_container->increment = $increment;
+        //   $event_container->field = $is_field ? $item : NULL;
+        //   $event_container->row = $row;
+        //   $event_container->entity = $entity;
+        // All calendar row plugins should provide
+        // a date_id that the theme can use.
+        // @todo implement
+        $event->date_id = $entity->date_id[0];
+
+        // We are working with an array of partially rendered items
+        // as we process the calendar, so we can group and organize them.
+        // At the end of our processing we'll need to swap in the fully
+        // formatted display of the row. We save it here and switch it in
+        // template_preprocess_calendar_item().
+        // @FIXME
+        // theme() has been renamed to _theme() and should NEVER be called
+        // directly. Calling _theme() directly can alter the expected
+        // output and potentially introduce security issues
+        // (see https://www.drupal.org/node/2195739).
+        // You should use renderable arrays instead.
+        //
+        //
+        // @see https://www.drupal.org/node/2195739
+        // $event->rendered = theme($this->theme_functions(),
+        // [
+        // 'view' => $this->view,
+        // 'options' => $this->options,
+        // 'row' => $row,
+        // 'field_alias' => isset($this->field_alias) ? $this->field_alias : '',
+        // ]);
+        /** @var \Drupal\calendar\CalendarEvent[] $events */
+        $events = $this->explodeValues($event);
+        foreach ($events as $event) {
+          switch ($this->options['colors']['legend']) {
+            case 'type':
+              if ($event->getEntityTypeId() == 'node') {
+                $this->nodeTypeStripe($event);
+              }
+
+              break;
+
+            case 'taxonomy':
+              $this->calendarTaxonomyStripe($event);
+              break;
+          }
+          $rows[] = $event;
+        }
       }
     }
 
@@ -540,13 +559,14 @@ class Calendar extends RowPluginBase {
 
   /**
    * @param \Drupal\calendar\CalendarEvent $event
+   *   A calendar event to explode date values.
    *
    * @return array
+   *   Return an array of calendar rows.
    * @throws \Exception
    * @todo rename and document
-   *
    */
-  public function explode_values($event) {
+  public function explodeValues(CalendarEvent $event) {
     $rows = [];
 
     $dateInfo = $this->dateArgument->view->dateInfo;
@@ -573,7 +593,8 @@ class Calendar extends RowPluginBase {
       $to = $now;
     }
 
-    // $now and $next are midnight (in display timezone) on the first day where node will occur.
+    // $now and $next are midnight (in display timezone) on
+    // the first day where node will occur.
     // $to is midnight on the last day where node will occur.
     // All three were limited by the min-max date range of the view.
     $position = 0;
@@ -630,7 +651,7 @@ class Calendar extends RowPluginBase {
    * @param \Drupal\calendar\CalendarEvent $event
    *   The event result object.
    */
-  public function nodeTypeStripe(&$event) {
+  public function nodeTypeStripe(CalendarEvent &$event) {
     $colors = isset($this->options['colors']['calendar_colors_type']) ? $this->options['colors']['calendar_colors_type'] : [];
     if (empty($colors)) {
       return;
@@ -655,8 +676,9 @@ class Calendar extends RowPluginBase {
    * Create a stripe based on a taxonomy term.
    *
    * @param \Drupal\calendar\CalendarEvent $event
+   *   A calendar event.
    */
-  public function calendarTaxonomyStripe(&$event) {
+  public function calendarTaxonomyStripe(CalendarEvent &$event) {
     $colors = isset($this->options['colors']['calendar_colors_taxonomy']) ? $this->options['colors']['calendar_colors_taxonomy'] : [];
     if (empty($colors)) {
       return;
@@ -684,6 +706,7 @@ class Calendar extends RowPluginBase {
    * Get form options for hiding elements based on legend type.
    *
    * @param mixed $mode
+   *   Mode to set the visibility by.
    *
    * @return array
    *   Returns form options in array.
