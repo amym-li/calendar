@@ -1,4 +1,4 @@
-name: Calendar
+name: 'Calendar'
 type: module
 description: 'Provides a Views plugin to display views containing dates as Calendars.'
 dependencies:
