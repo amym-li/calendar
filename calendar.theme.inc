@@ -898,7 +898,7 @@ function _calc_indents(array &$overlapped_items, $start, $end, array &$item, $de
  *   Depth of this branch.
  *
  * @return int
- *  Returns the calculated value in int.
+ *   Returns the calculated value in int.
  */
 function _calc_indent($cur_depth, $depth) {
   return round(10 * $cur_depth / ($depth + 1));

@@ -109,7 +109,6 @@ class CalendarDateInfo {
    * @var bool
    *   The forbid value.
    * @TODO Explain what this variable does.
-   *
    */
   protected $forbid;
 

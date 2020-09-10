@@ -1322,6 +1322,7 @@ class Calendar extends StylePluginBase {
    *
    * @return array
    *   An array with information on the current day for use in a datebox.
+   *
    * @todo expand documentation
    * If a day has no events, the empty day theme info is added to the return
    * array.

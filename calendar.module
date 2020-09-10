@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ */
+
+use Drupal\calendar\Plugin\views\argument\CalendarDate;
 use Drupal\Component\Datetime\DateTimePlus;
 /**
  * @file
@@ -10,6 +15,7 @@ use Drupal\Core\Url;
 use Drupal\views\ViewExecutable;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\calendar\CalendarHelper;
+
 define('CALENDAR_SHOW_ALL', 0);
 define('CALENDAR_HIDE_ALL', -1);
 define('CALENDAR_EMPTY_STRIPE', '#ffffff');
@@ -57,8 +63,6 @@ function calendar_views_pre_render(ViewExecutable $view) {
   _calendar_views_track_current_date($view);
 }
 
-
-
 /**
  * Track the current date as the user moves from calendar display to calendar
  * display.
@@ -77,7 +81,7 @@ function _calendar_views_track_current_date(ViewExecutable $view) {
       // If this is not a default date, i.e. we have browsed to a new calendar
       // period on a display we were already on, store the midpoint of the current
       // view as the current date in a session.
-      if ($argument instanceof \Drupal\calendar\Plugin\views\argument\CalendarDate && empty($argument->is_default)) {
+      if ($argument instanceof CalendarDate && empty($argument->is_default)) {
         $date_range = $argument->date_handler->arg_range($argument->argument);
         $session_date = $date_range[0];
         $days = intval(($date_range[1]->format('U') - $date_range[0]->format('U')) / 3600 / 24 / 2);
@@ -95,7 +99,7 @@ function calendar_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     case 'help.page.calendar':
       return '<p>' . t('View complete documentation at <a href=":link">Date and Calendar Documentation</a>.',
-      	[':link' => 'http://drupal.org/node/262062']) . '</p>';
+          [':link' => 'http://drupal.org/node/262062']) . '</p>';
   }
 }
 
@@ -124,7 +128,7 @@ function calendar_theme() {
       'variables' => ['inner' => NULL, 'class' => NULL, 'iehint' => NULL],
     ],
     'calendar_day' => [
-      'variables' => ['view' => NULL, 'options' => [], 'rows' => [],],
+      'variables' => ['view' => NULL, 'options' => [], 'rows' => []],
       'file' => 'calendar.theme.inc',
     ],
     'calendar_month' => [
@@ -139,19 +143,19 @@ function calendar_theme() {
       'file' => 'calendar.theme.inc',
     ],
     'calendar_week' => [
-      'variables' => ['view' => NULL, 'day_names' => [], 'rows' => [],],
+      'variables' => ['view' => NULL, 'day_names' => [], 'rows' => []],
       'file' => 'calendar.theme.inc',
     ],
     'calendar_week_overlap' => [
-      'variables' => ['view' => NULL, 'day_names' => [], 'rows' => [],],
+      'variables' => ['view' => NULL, 'day_names' => [], 'rows' => []],
       'file' => 'calendar.theme.inc',
     ],
     'calendar_day_overlap' => [
-      'variables' => ['view' => NULL, 'options' => [], 'rows' => [],],
+      'variables' => ['view' => NULL, 'options' => [], 'rows' => []],
       'file' => 'calendar.theme.inc',
     ],
     'calendar_year' => [
-      'variables' => ['view' => NULL, 'rows' => [], 'options' => [], 'months' => [], 'mini' => FALSE,],
+      'variables' => ['view' => NULL, 'rows' => [], 'options' => [], 'months' => [], 'mini' => FALSE],
       'file' => 'calendar.theme.inc',
     ],
     'calendar_header' => [
@@ -169,7 +173,7 @@ function calendar_theme() {
       'variables' => [
         'start_time' => NULL,
         'next_start_time' => NULL,
-        'curday_date' => NULL
+        'curday_date' => NULL,
       ],
     ],
     'calendar_pager' => [
@@ -194,12 +198,14 @@ function calendar_groupby_times($type = '') {
         $times[] = DateTimePlus::datePad($i) . ':00:00';
       }
       break;
+
     case 'half':
       for ($i = 0; $i <= 23; $i++) {
         $times[] = DateTimePlus::datePad($i) . ':00:00';
         $times[] = DateTimePlus::datePad($i) . ':30:00';
       }
       break;
+
     default:
       break;
   }
@@ -228,12 +234,11 @@ function calendar_granularity_path(ViewExecutable &$view, $granularity) {
     $paths[$view_name][$granularity] = '';
 
     foreach ($view->displayHandlers->getConfiguration() as $id => $display) {
-      // Check for !empty() in case the view is not fully formed or has displays that are marked to be deleted
+      // Check for !empty() in case the view is not fully formed or has displays that are marked to be deleted.
       // @todo handle deleted displays
-//      if (!empty($display->deleted) || empty($display->display_options['style_plugin']) || (isset($display->display_options['enabled']) && $display->display_options['enabled'] == FALSE)) {
-//        continue;
-//      }
-
+      //   if (!empty($display->deleted) || empty($display->display_options['style_plugin']) || (isset($display->display_options['enabled']) && $display->display_options['enabled'] == FALSE)) {
+      //        continue;
+      //      }
       if ($display['display_plugin'] != 'feed' && !empty($display['display_options']['path']) && !empty($display['display_options']['arguments'])) {
 
         // Set to the default value, reset below if another value is found.
@@ -241,7 +246,7 @@ function calendar_granularity_path(ViewExecutable &$view, $granularity) {
         $argument = CalendarHelper::getDateArgumentHandler($view, $id);
 
         if ($argument->getGranularity() == $granularity) {
-          $part_path =  $display['display_options']['path'];
+          $part_path = $display['display_options']['path'];
           $parts = explode('/', $part_path);
           if (in_array('%', $parts)) {
             $url = Url::fromRoute('<current>');
