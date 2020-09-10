@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\Component\Datetime\DateTimePlus;
 /**
  * @file
  * This is the Calendar module for calendar filtering and display in views.
@@ -190,13 +191,13 @@ function calendar_groupby_times($type = '') {
   switch ($type) {
     case 'hour':
       for ($i = 0; $i <= 23; $i++) {
-        $times[] = \Drupal\Component\Datetime\DateTimePlus::datePad($i) . ':00:00';
+        $times[] = DateTimePlus::datePad($i) . ':00:00';
       }
       break;
     case 'half':
       for ($i = 0; $i <= 23; $i++) {
-        $times[] = \Drupal\Component\Datetime\DateTimePlus::datePad($i) . ':00:00';
-        $times[] = \Drupal\Component\Datetime\DateTimePlus::datePad($i) . ':30:00';
+        $times[] = DateTimePlus::datePad($i) . ':00:00';
+        $times[] = DateTimePlus::datePad($i) . ':30:00';
       }
       break;
     default:
