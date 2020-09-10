@@ -62,7 +62,7 @@ class ViewsFieldTemplate extends ViewsDuplicateBuilderBase {
   /**
    * {@inheritdoc}
    */
-  protected function alterViewTemplateAfterCreation(array &$view_template, $options = NULL) {
+  protected function alterViewTemplateAfterCreation(array &$view_template, array $options = NULL) {
     parent::alterViewTemplateAfterCreation($view_template, $options);
     $field_defs = $this->fieldManager->getBaseFieldDefinitions($this->getDefinitionValue('entity_type'));
     if (empty($field_defs['status'])) {
@@ -76,7 +76,7 @@ class ViewsFieldTemplate extends ViewsDuplicateBuilderBase {
   /**
    * {@inheritDoc}
    */
-  public function buildConfigurationForm($form, FormStateInterface $form_state) {
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $config_form = parent::buildConfigurationForm($form, $form_state);
     $replacements = $this->getDefinitionValue('replacements');
     if (isset($replacements['base_path'])) {
