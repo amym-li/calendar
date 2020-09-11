@@ -81,6 +81,7 @@ class DateArgumentWrapper {
    * protected argFormat member.
    *
    * @return string
+   *   Returns date format.
    */
   public function getArgFormat() {
     $class = get_class($this->dateArg);
@@ -99,7 +100,7 @@ class DateArgumentWrapper {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public function createDateTime() {
     if ($value = $this->dateArg->getValue()) {
@@ -112,7 +113,7 @@ class DateArgumentWrapper {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   protected function createFromFormat($value) {
     $format = $this->getArgFormat();
@@ -133,7 +134,7 @@ class DateArgumentWrapper {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public function format($format) {
     if ($date = $this->createDateTime()) {
@@ -143,7 +144,7 @@ class DateArgumentWrapper {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public function getGranularity() {
     $plugin_id = $this->dateArg->getPluginId();
@@ -153,21 +154,17 @@ class DateArgumentWrapper {
       case 'year_month':
         return 'month';
 
-      break;
       // Views and Datetime module don't use same suffix :(.
       case 'full_date':
       case 'fulldate':
         return 'day';
 
-      break;
       case 'year':
         return 'year';
 
-      break;
       case 'year_week';
         return 'week';
 
-      break;
     }
   }
 
@@ -175,6 +172,7 @@ class DateArgumentWrapper {
    * Function to get min date.
    *
    * @return \DateTime
+   *   Returns min date.
    */
   public function getMinDate() {
     if (!$this->minDate) {
@@ -199,6 +197,7 @@ class DateArgumentWrapper {
    * Function to get max date.
    *
    * @return \DateTime
+   *   Returns max date.
    */
   public function getMaxDate() {
     if (!$this->maxDate) {
@@ -225,9 +224,8 @@ class DateArgumentWrapper {
    * \DateTime::createFromFormat will not throw an error but try to make a date
    * \DateTime::getLastErrors() is also not reliable.
    *
-   * @param string $value
-   *
    * @return bool
+   *   Returns TRUE if value is valid else FALSE.
    */
   public function validateValue() {
     $value = $this->dateArg->getValue();
@@ -249,7 +247,7 @@ class DateArgumentWrapper {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   protected function getYearWeek($value) {
     if (is_numeric($value) && strlen($value) == 6) {

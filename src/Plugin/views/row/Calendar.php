@@ -21,8 +21,9 @@ use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
- * Plugin which creates a view on the resulting object and formats it as a
- * Calendar entity.
+ * Plugin which creates a view on the resulting object.
+ *
+ * Also formats it as a Calendar entity.
  *
  * @ViewsRow(
  *   id = "calendar_row",
@@ -558,18 +559,21 @@ class Calendar extends RowPluginBase {
   }
 
   /**
+   * Get the values from event.
+   *
    * @param \Drupal\calendar\CalendarEvent $event
    *   A calendar event to explode date values.
    *
    * @return array
    *   Return an array of calendar rows.
+   *
    * @throws \Exception
+   *
    * @todo rename and document
    */
   public function explodeValues(CalendarEvent $event) {
     $rows = [];
 
-    $dateInfo = $this->dateArgument->view->dateInfo;
     $item_start_date = $event->getStartDate()->getTimestamp();
     $item_end_date = $event->getEndDate()->getTimestamp();
 
@@ -699,7 +703,6 @@ class Calendar extends RowPluginBase {
         $event->addStripeHex($colors[$tid]);
       }
     }
-    return;
   }
 
   /**

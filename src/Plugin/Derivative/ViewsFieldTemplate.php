@@ -107,7 +107,7 @@ class ViewsFieldTemplate implements ContainerDeriverInterface {
           $entity_views_tables[$data_table] = $this->viewsData->get($data_table);
         }
         foreach ($entity_views_tables as $table_id => $entity_views_table) {
-          foreach ($entity_views_table as $key => $field_info) {
+          foreach ($entity_views_table as $field_info) {
             if ($this->isDateField($field_info)) {
               $derivative = [
                 'replacements' => [
@@ -189,7 +189,8 @@ class ViewsFieldTemplate implements ContainerDeriverInterface {
             'view_template_id' => 'calendar_config_field',
           ];
           $this->setDerivative($derivative, $base_plugin_definition);
-          // $this->setDerivative($field_info, $entity_type, $field_table_data, $base_plugin_definition);
+          // $this->setDerivative($field_info, $entity_type, $field_table_data,
+          // $base_plugin_definition);
         }
 
       }
@@ -216,7 +217,7 @@ class ViewsFieldTemplate implements ContainerDeriverInterface {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   protected function setDerivative(array $derivative, array $base_plugin_definition) {
 
@@ -244,9 +245,12 @@ class ViewsFieldTemplate implements ContainerDeriverInterface {
    * Return the default field from a View table array.
    *
    * @param array $table_data
+   *   Array of view table.
    * @param mixed $entity_type_id
+   *   Id for entity type.
    *
    * @return null|string
+   *   Returns default field.
    */
   private function getTableDefaultField(array $table_data, $entity_type_id = NULL) {
     $default_field_id = NULL;
@@ -263,11 +267,13 @@ class ViewsFieldTemplate implements ContainerDeriverInterface {
   }
 
   /**
-   * Return the base field from a View tabel array.
+   * Return the base field from a View table array.
    *
    * @param array $table_data
+   *   Array of view table.
    *
    * @return null|string
+   *   Returns base field or null.
    */
   private function getTableBaseField(array $table_data) {
     if (!empty($table_data['table']['base']['field'])) {

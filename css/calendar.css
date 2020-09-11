@@ -398,14 +398,3 @@ table.calendar-legend tr.even .stripe {
 nav.pager > ul {
   list-style: none;
 }
-/**
- * The following are not used by default but are available for themes.
- */
-.calendar-calendar td.past {
-}
-.calendar-calendar td.future {
-}
-.calendar-calendar td.has-events {
-}
-.calendar-calendar td.has-no-events {
-}

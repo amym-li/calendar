@@ -583,10 +583,12 @@ class Calendar extends StylePluginBase {
     // @TODO min and max date timezone info shouldn't be stored separately.
     $date = clone($this->dateInfo->getMinDate());
     date_timezone_set($date, $display_timezone);
-    // $this->dateInfo->min_zone_string = date_format($date, DATETIME_DATE_STORAGE_FORMAT);
+    // $this->dateInfo->min_zone_string =
+    // date_format($date, DATETIME_DATE_STORAGE_FORMAT);
     $date = clone($this->dateInfo->getMaxDate());
     date_timezone_set($date, $display_timezone);
-    // $this->dateInfo->max_zone_string = date_format($date, DATETIME_DATE_STORAGE_FORMAT);
+    // $this->dateInfo->max_zone_string =
+    // date_format($date, DATETIME_DATE_STORAGE_FORMAT);
     // Let views render fields the way it thinks they should look before we
     // start massaging them.
     $this->renderFields($this->view->result);
@@ -704,7 +706,7 @@ class Calendar extends StylePluginBase {
           'day',
           'week',
         ])) {
-          $url = CalendarHelper::getURLForGranularity($this->view, 'week', [$this->dateInfo->getMinYear() . $week]);
+          $url = CalendarHelper::getUrlForGranularity($this->view, 'week', [$this->dateInfo->getMinYear() . $week]);
           if (!empty($url)) {
             $week_number = [
               '#type' => 'link',
@@ -843,7 +845,9 @@ class Calendar extends StylePluginBase {
                     else {
                       $single_days[] = $event['entry'];
                     }
-                    // $single_days .= (isset($event['more_link'])) ? '<div class="calendar-more">' . $event['entry'] . '</div>' : $event['entry'];
+                    // $single_days .= (isset($event['more_link'])) ?
+                    // '<div class="calendar-more">' . $event['entry'] .
+                    // '</div>' : $event['entry'];
                   }
                 }
                 $class = 'single-day';
@@ -1044,7 +1048,7 @@ class Calendar extends StylePluginBase {
     $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
 
     if (!empty($this->styleInfo->isShowWeekNumbers())) {
-      $url = CalendarHelper::getURLForGranularity($this->view, 'week', [$this->dateInfo->getMinYear() . sprintf('%02s', $week)]);
+      $url = CalendarHelper::getUrlForGranularity($this->view, 'week', [$this->dateInfo->getMinYear() . sprintf('%02s', $week)]);
       if (!empty($url)) {
         $week_number = [
           '#type' => 'link',
@@ -1104,7 +1108,7 @@ class Calendar extends StylePluginBase {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   private function isPastMonth(int $month, int $current_month) {
     if ($current_month == 1 && $month == 12) {
@@ -1119,7 +1123,7 @@ class Calendar extends StylePluginBase {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   private function isFutureMonth(int $month, int $current_month) {
     if ($current_month == 12 && $month == 1) {
@@ -1158,7 +1162,7 @@ class Calendar extends StylePluginBase {
       foreach ($this->items as $date => $day) {
         if ($date == $current_day_date) {
           foreach ($day as $time => $hour) {
-            foreach ($hour as $key => $item) {
+            foreach ($hour as $item) {
               $total_count++;
               $ids[] = $item->date_id;
             }
@@ -1181,7 +1185,7 @@ class Calendar extends StylePluginBase {
           ksort($day);
           foreach ($day as $time => $hour) {
             /** @var \Drupal\calendar\CalendarEvent $item */
-            foreach ($hour as $key => $item) {
+            foreach ($hour as $item) {
               $all_day = $item->isAllDay();
 
               // Parse out date part.
@@ -1342,7 +1346,7 @@ class Calendar extends StylePluginBase {
         $count = 0;
         $selected = TRUE;
         ksort($day);
-        foreach ($day as $time => $hour) {
+        foreach ($day as $hour) {
           /** @var $item \Drupal\calendar\CalendarEvent */
           foreach ($hour as $key => $item) {
             $count++;

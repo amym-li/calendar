@@ -113,6 +113,7 @@ class CalendarEvent {
    * Function to get entity.
    *
    * @return \Drupal\Core\Entity\ContentEntityInterface
+   *   Returns entity.
    */
   public function getEntity() {
     return $this->entity;
@@ -129,7 +130,7 @@ class CalendarEvent {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public function getBundle() {
     return $this->entity->bundle();
@@ -151,7 +152,7 @@ class CalendarEvent {
    * @param \DateTime $startDate
    *   The start date.
    */
-  public function setStartDate($startDate) {
+  public function setStartDate(\DateTime $startDate) {
     $this->startDate = $startDate;
   }
 
@@ -171,7 +172,7 @@ class CalendarEvent {
    * @param \DateTime $endDate
    *   The end date.
    */
-  public function setEndDate($endDate) {
+  public function setEndDate(\DateTime $endDate) {
     $this->endDate = $endDate;
   }
 
@@ -231,7 +232,7 @@ class CalendarEvent {
    * @param \DateTimeZone $timezone
    *   The timezone of this event.
    */
-  public function setTimezone($timezone) {
+  public function setTimezone(\DateTimeZone $timezone) {
     $this->timezone = $timezone;
   }
 
@@ -330,7 +331,8 @@ class CalendarEvent {
   /**
    * Add a single strip hex.
    *
-   * @param $stripeHex
+   * @param string $stripeHex
+   *   The stripe hex code.
    */
   public function addStripeHex($stripeHex) {
     $this->stripeHexes[] = $stripeHex;
@@ -339,7 +341,8 @@ class CalendarEvent {
   /**
    * Add a single strip label.
    *
-   * @param $stripeLabel
+   * @param string $stripeLabel
+   *   The stripe label.
    */
   public function addStripeLabel($stripeLabel) {
     $this->stripeLabels[] = $stripeLabel;
@@ -349,6 +352,7 @@ class CalendarEvent {
    * The getter which indicates whether an event covers multiple days.
    *
    * @return bool
+   *   Returns true or false for multiple days.
    */
   public function getIsMultiDay() {
     return $this->isMultiDay;

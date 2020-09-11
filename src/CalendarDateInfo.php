@@ -56,7 +56,6 @@ class CalendarDateInfo {
   protected $range;
 
   // @TODO Find a better way to hold all "minimum x" information
-
   /**
    * The minimum date of this calendar.
    *
@@ -106,6 +105,8 @@ class CalendarDateInfo {
   protected $maxDate;
 
   /**
+   * Forbid variable.
+   *
    * @var bool
    *   The forbid value.
    * @TODO Explain what this variable does.
@@ -148,7 +149,7 @@ class CalendarDateInfo {
    * @param \Drupal\calendar_datetime\Plugin\views\argument\Date $dateArgument
    *   The date argument.
    */
-  public function setDateArgument($dateArgument) {
+  public function setDateArgument(Date $dateArgument) {
     $this->dateArgument = $dateArgument;
   }
 
@@ -188,7 +189,7 @@ class CalendarDateInfo {
    * @param \DateTimeZone $timezone
    *   The timezone variable.
    */
-  public function setTimezone($timezone) {
+  public function setTimezone(\DateTimeZone $timezone) {
     $this->timezone = $timezone;
   }
 
@@ -248,7 +249,7 @@ class CalendarDateInfo {
    * @param \DateTime $minDate
    *   The minimum date.
    */
-  public function setMinDate($minDate) {
+  public function setMinDate(\DateTime $minDate) {
     $this->minDate = $minDate;
   }
 
@@ -348,7 +349,7 @@ class CalendarDateInfo {
    * @param \DateTime $maxDate
    *   The maximum date.
    */
-  public function setMaxDate($maxDate) {
+  public function setMaxDate(\DateTime $maxDate) {
     $this->maxDate = $maxDate;
   }
 
