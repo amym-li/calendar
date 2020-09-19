@@ -737,7 +737,7 @@ class Calendar extends StylePluginBase {
         $day_week_day = $this->currentDay->format('w');
         $this->currentDay->modify('-' . ((7 + $day_week_day - $first_day) % 7) . ' days');
 
-        for ($week_day = 0; $week_day < 7; $week_day++) {
+        foreach ($week_days as $week_day => $day_object) {
 
           $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
           $item = NULL;
@@ -760,7 +760,7 @@ class Calendar extends StylePluginBase {
               'class' => 'date-box',
               'date' => $current_day_date,
               'id' => $this->view->id() . '-' . $current_day_date . '-date-box',
-              'header_id' => $week_days[$week_day],
+              'header_id' => $day_object->render(),
               'day_of_month' => $this->currentDay->format('j'),
             ];
             $item['class'] .= ($current_day_date == $today && $in_month ? ' today' : '') .
@@ -983,20 +983,24 @@ class Calendar extends StylePluginBase {
    *   buckets and the total row count.
    */
   public function calendarBuildWeek($check_month = FALSE) {
+    $week_days = CalendarHelper::weekDays(TRUE);
+    $week_days = CalendarHelper::weekDaysOrdered($week_days);
     $current_day_date = $this->currentDay->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
     $month = $this->currentDay->format('n');
     $first_day = \Drupal::config('system.date')->get('first_day');
 
     // Set up buckets.
     $total_rows = 0;
-    $multiday_buckets = [[], [], [], [], [], [], []];
-    $singleday_buckets = [[], [], [], [], [], [], []];
 
     // Move backwards to the first day of the week.
     $day_week_day = $this->currentDay->format('w');
     $this->currentDay->modify('-' . ((7 + $day_week_day - $first_day) % 7) . ' days');
 
-    for ($i = 0; $i < 7; $i++) {
+    foreach ($week_days as $i => $day_object) {
+      // Create each bucket on the fly so it goes with the correct key order.
+      $multiday_buckets[$i] = [];
+      $singleday_buckets[$i] = [];
+
       if ($check_month && ($current_day_date < $this->dateInfo->getMinDate()
         ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT) || $current_day_date > $this->dateInfo->getMaxDate()
         ->format(DateTimeItemInterface::DATE_STORAGE_FORMAT) || $this->currentDay->format('n') != $month)) {
