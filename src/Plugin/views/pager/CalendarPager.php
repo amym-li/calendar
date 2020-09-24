@@ -46,7 +46,7 @@ class CalendarPager extends PagerPluginBase {
    * {@inheritdoc}
    */
   public function render($input) {
-    // $this->argument is \Drupal\calendar\DateArgumentWrapper object or FALSE.
+    // The $this->argument is an \Drupal\calendar\DateArgumentWrapper object or FALSE.
     if (!$this->argument || !$this->argument->validateValue()) {
       return [];
     }
@@ -70,7 +70,6 @@ class CalendarPager extends PagerPluginBase {
    *   Either '-' or '+' to determine which direction.
    *
    * @return string
-   *   Returns date argument.
    */
   protected function getPagerArgValue($mode) {
     $datetime = $this->argument->createDateTime();
@@ -88,7 +87,6 @@ class CalendarPager extends PagerPluginBase {
    *   input.
    *
    * @return string
-   *   Returns url for pager link.
    */
   protected function getPagerUrl($mode, array $input) {
     $value = $this->getPagerArgValue($mode);
@@ -97,7 +95,7 @@ class CalendarPager extends PagerPluginBase {
     /**
      * @var \Drupal\views\Plugin\views\argument\ArgumentPluginBase $handler
      */
-    foreach ($this->view->argument as $handler) {
+    foreach ($this->view->argument as $name => $handler) {
       if ($current_position != $this->argument->getPosition()) {
         $arg_vals["arg_$current_position"] = $handler->getValue();
       }

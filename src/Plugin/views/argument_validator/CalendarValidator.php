@@ -97,7 +97,6 @@ class CalendarValidator extends ArgumentValidatorPluginBase {
    * Get default format value for the options form.
    *
    * @return string
-   *   Returns default format.
    */
   protected function getDefaultReplacementFormat() {
 
@@ -145,7 +144,7 @@ class CalendarValidator extends ArgumentValidatorPluginBase {
   }
 
   /**
-   * {@inheritdoc}
+   * {@inheritdoc}.
    */
   public function getContextDefinition() {
     return new ContextDefinition('string', $this->argument->adminLabel(), FALSE);

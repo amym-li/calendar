@@ -11,7 +11,7 @@ use Drupal\views\Views;
 trait CalendarViewsTrait {
 
   /**
-   * {@inheritdoc}
+   * {@inheritDoc}
    */
   protected function getTableEntityType($table) {
     static $recursion = 0;
@@ -33,12 +33,11 @@ trait CalendarViewsTrait {
   }
 
   /**
-   * Check if field is Entity Reference field that references taxonomy term.
+   * Determine if this field is Entity Reference field that references a taxonomy term.
    *
    * @todo Change to a more generic is Content Entity Reference.
    *
-   * @param string $field_info
-   *   Info about field.
+   * @param $field_info
    * @param \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager
    *   The entity field manager service.
    */
