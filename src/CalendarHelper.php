@@ -905,7 +905,7 @@ class CalendarHelper extends DateHelper {
       // Check if route exists. $router->getRoutesByName will throw error if no match.
       $routes = $router->getRoutesByNames([$route_name]);
       if ($routes) {
-        return Url::fromRoute($route_name, static::getViewRouteParameters($arguments));
+        return Url::fromRoute($route_name, static::getViewRouteParameters($arguments, $view));
       }
     }
     if ($display_id = static::getDisplayForGranularity($view, $granularity)) {
@@ -929,8 +929,8 @@ class CalendarHelper extends DateHelper {
    *   Returns url.
    */
   public static function getViewsURL(ViewExecutable $view, $display_id, array $args = []) {
+    $route_parameters = static::getViewRouteParameters($args, $view);
     $route_name = static::getDisplayRouteName($view->id(), $display_id);
-    $route_parameters = static::getViewRouteParameters($args, $route_name);
     return Url::fromRoute($route_name, $route_parameters);
   }
 
@@ -950,21 +950,35 @@ class CalendarHelper extends DateHelper {
   }
 
   /**
-   * @param $args
-   *
-   * @param $route_name
+   * @param array $args
+   *   The provided arguments.
+   * @param \Drupal\views\ViewExecutable $view
+   *   The view.
    *
    * @return array
    */
-  public static function getViewRouteParameters($args, $route_name) {
-    $provider = \Drupal::service('router.route_provider');
-    $route = $provider->getRouteByName($route_name);
-    $map = $route->getOption('_view_argument_map');
+  public static function getViewRouteParameters($args, ViewExecutable $view) {
     $route_parameters = [];
-    $arg_position = 0;
-    foreach ($args as $arg) {
-      $route_parameters[$map['arg_' . $arg_position]] = $arg;
-      $arg_position++;
+    $path = $view->getPath();
+    $views_arguments = $view->args;
+    $bits = explode('/', $path);
+    $arg_counter = 0;
+    foreach ($bits as $pos => $bit) {
+      if ($bit == '%') {
+        // Generate the name of the parameter using the key of the argument
+        // handler.
+        $arg_id = 'arg_' . $arg_counter++;
+        $route_parameters[$arg_id] = array_shift($views_arguments);
+      }
+      elseif (strpos($bit, '%') === 0) {
+        // Use the name defined in the path.
+        $parameter_name = substr($bit, 1);
+        $route_parameters[$parameter_name] = array_shift($views_arguments);
+        $arg_counter++;
+      }
+    }
+    for ($i = $arg_counter; $i < $i + count($args); $i++) {
+      $route_parameters['arg_' . $i] = array_shift($args);
     }
     return $route_parameters;
   }
