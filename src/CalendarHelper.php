@@ -587,7 +587,7 @@ class CalendarHelper extends DateHelper {
   private static function viewsFetchFields($base, $type, $grouping = FALSE) {
     static $fields = [];
     if (empty($fields)) {
-      $data = Views::viewsData()->get();
+      $data = Views::viewsData()->getAll();
       $start = microtime(TRUE);
       // This constructs this ginormous multi dimensional array to
       // collect the important data about fields. In the end,
