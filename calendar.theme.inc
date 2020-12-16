@@ -804,7 +804,7 @@ function template_preprocess_calendar_stripe_legend(array &$vars) {
  *   Returns an array with the max depth of the branch and whether an overlap
  *   occurred.
  */
-function _calc_indents(array &$overlapped_items, $start, $end, array &$item, $depth = 0) {
+function _calc_indents(array &$overlapped_items, $start, $end, &$item, $depth = 0) {
 
   // Are there any items at this depth?
   if (!empty($overlapped_items)) {
