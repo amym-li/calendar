@@ -65,7 +65,7 @@ class Calendar extends RowPluginBase {
    * The datafields variable declaration.
    *
    * @var dateFields
-   *   todo document.
+   *   @todo document.
    */
   protected $dateFields = [];
 
@@ -89,7 +89,7 @@ class Calendar extends RowPluginBase {
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
     parent::init($view, $display, $options);
 
-    // TODO needed?
+    // @todo needed?
     // $this->base_table = $view->base_table;
     // $this->baseField = $view->base_field;.
   }
@@ -247,7 +247,7 @@ class Calendar extends RowPluginBase {
         // @todo Provide storage manager via Dependency Injection
         $field_config = \Drupal::entityTypeManager()->getStorage('field_config')->loadByProperties(['field_name' => $field_name]);
 
-        // @TODO refactor
+        // @todo refactor
         reset($field_config);
         $key = key($field_config);
 
@@ -338,7 +338,7 @@ class Calendar extends RowPluginBase {
     // repeatedly for the same entity if there are multiple results for one
     // entity.
     $ids = [];
-    /** @var $row \Drupal\views\ResultRow */
+    /** @var \Drupal\views\ResultRow $row */
     foreach ($result as $row) {
       // Use the entity id as the key so we don't create more than one value per
       // entity.
@@ -375,7 +375,7 @@ class Calendar extends RowPluginBase {
 
     $data = $data['name'];
     $date_fields = [];
-    /** @var $handler \Drupal\views\Plugin\views\argument\Formula */
+    /** @var \Drupal\views\Plugin\views\argument\Formula $handler */
     foreach ($this->view->getDisplay()->getHandlers('argument') as $handler) {
       if ($handler instanceof Date) {
         // Strip "_calendar" from the field name.
@@ -457,7 +457,8 @@ class Calendar extends RowPluginBase {
       else {
         $datetime_type = $field_definition->getSetting('datetime_type');
         if ($datetime_type === DateTimeItem::DATETIME_TYPE_DATE) {
-          $storage_format = DateTimeItemInterface::DATE_STORAGE_FORMAT;;
+          $storage_format = DateTimeItemInterface::DATE_STORAGE_FORMAT;
+          ;
         }
         else {
           $storage_format = DateTimeItemInterface::DATETIME_STORAGE_FORMAT;
@@ -577,7 +578,7 @@ class Calendar extends RowPluginBase {
     // anything outside the view date range, and possibly create additional
     // nodes so that we have a 'node' for each day that this item occupies in
     // this view.
-    // @TODO make this work with the CalendarDateInfo object
+    // @todo make this work with the CalendarDateInfo object
     $now = $event->getStartDate()->format('Y-m-d');
     $to = $event->getEndDate()->format('Y-m-d');
     $next = new \DateTime();
@@ -599,7 +600,7 @@ class Calendar extends RowPluginBase {
     // All three were limited by the min-max date range of the view.
     $position = 0;
     while (!empty($now) && $now <= $to) {
-      /** @var $entity \Drupal\calendar\CalendarEvent */
+      /** @var \Drupal\calendar\CalendarEvent $entity */
       $entity = clone($event);
 
       // Get start and end of current day.
@@ -618,7 +619,7 @@ class Calendar extends RowPluginBase {
       $entity->calendar_start_date = (new \DateTime($start_string));
       $entity->calendar_end_date = (new \DateTime($end_string));
 
-      // @TODO don't hardcode granularity and increment
+      // @todo don't hardcode granularity and increment
       $granularity = 'day';
       $increment = 1;
       $entity->setAllDay(CalendarHelper::dateIsAllDay($entity->getStartDate()->format('Y-m-d H:i:s'), $entity->getEndDate()->format('Y-m-d H:i:s'), $granularity, $increment));

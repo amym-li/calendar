@@ -2,8 +2,6 @@
 
 namespace Drupal\calendar;
 
-use Datetime;
-use DateTimeZone;
 use Drupal\Core\Datetime\DateHelper;
 use Drupal\Core\Url;
 use Drupal\views\Plugin\views\argument\ArgumentPluginBase;
@@ -175,7 +173,7 @@ class CalendarHelper extends DateHelper {
             $item_diff = 0 - $item1;
             for ($i = 1; $i < abs($year_diff); $i++) {
               $date1->modify('-1 year');
-              // @TODO self::daysInYear() throws a warning when used with a
+              // @todo self::daysInYear() throws a warning when used with a
               // \DateTime object. See https://www.drupal.org/node/2596043
               // $item_diff -= self::daysInYear($date1);
               $item_diff -= 365;
@@ -184,7 +182,7 @@ class CalendarHelper extends DateHelper {
             return $item_diff - (365 - $item2);
           }
           else {
-            // @TODO self::daysInYear() throws a warning when used with a
+            // @todo self::daysInYear() throws a warning when used with a
             // \DateTime object. See https://www.drupal.org/node/2596043
             // $item_diff = self::daysInYear($date1) - $item1;
             $item_diff = 365 - $item1;
@@ -357,7 +355,7 @@ class CalendarHelper extends DateHelper {
     $date = substr($date, 0, 10);
     $parts = explode('-', $date);
 
-    $timezone = new DateTimeZone('UTC');
+    $timezone = new \DateTimeZone('UTC');
     $date = new DateTime($date . ' 12:00:00', $timezone);
 
     $year_date = new DateTime($parts[0] . '-01-01 12:00:00', $timezone);

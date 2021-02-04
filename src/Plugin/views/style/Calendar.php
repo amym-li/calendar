@@ -573,14 +573,14 @@ class Calendar extends StylePluginBase {
     }
     $this->styleInfo->setCustomGroupByField($this->options['groupby_field']);
 
-    // TODO make this an option setting.
+    // @todo make this an option setting.
     $this->styleInfo->setShowEmptyTimes(!empty($this->options['groupby_times_custom']) ? TRUE : FALSE);
 
     // Set up parameters for the current view that can be used by row plugin.
     $display_timezone = date_timezone_get($this->dateInfo->getMinDate());
     $this->dateInfo->setTimezone($display_timezone);
 
-    // @TODO min and max date timezone info shouldn't be stored separately.
+    // @todo min and max date timezone info shouldn't be stored separately.
     $date = clone($this->dateInfo->getMinDate());
     date_timezone_set($date, $display_timezone);
     // $this->dateInfo->min_zone_string = date_format($date, DATETIME_DATE_STORAGE_FORMAT);
@@ -862,7 +862,7 @@ class Calendar extends StylePluginBase {
               ];
 
               // Hack for ie to help it properly space single day rows.
-              // todo do we still need this?
+              // @todo do we still need this?
               if ($rowspan > 1 && $in_month && $single_day_count > 0) {
                 $max_multirow_count = max($max_multirow_count, $single_day_count);
               }
@@ -1347,7 +1347,7 @@ class Calendar extends StylePluginBase {
         $selected = TRUE;
         ksort($day);
         foreach ($day as $time => $hour) {
-          /** @var $item \Drupal\calendar\CalendarEvent */
+          /** @var \Drupal\calendar\CalendarEvent $item */
           foreach ($hour as $key => $item) {
             $count++;
             $ids[$item->getType()] = $item;

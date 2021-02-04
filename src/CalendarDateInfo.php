@@ -55,7 +55,7 @@ class CalendarDateInfo {
    */
   protected $range;
 
-  // @TODO Find a better way to hold all "minimum x" information
+  // @todo Find a better way to hold all "minimum x" information
 
   /**
    * The minimum date of this calendar.
@@ -108,7 +108,7 @@ class CalendarDateInfo {
   /**
    * @var bool
    *   The forbid value.
-   * @TODO Explain what this variable does.
+   * @todo Explain what this variable does.
    */
   protected $forbid;
 
