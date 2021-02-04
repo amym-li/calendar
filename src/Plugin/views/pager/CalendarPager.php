@@ -7,6 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\views\Plugin\views\pager\PagerPluginBase;
 use Drupal\views\ViewExecutable;
+use Drupal\Core\Url;
 
 /**
  * The plugin to handle calendar pager.
@@ -46,7 +47,7 @@ class CalendarPager extends PagerPluginBase {
    * {@inheritdoc}
    */
   public function render($input) {
-    // The $this->argument is an \Drupal\calendar\DateArgumentWrapper object or FALSE.
+    // The $this->argument may be FALSE.
     if (!$this->argument || !$this->argument->validateValue()) {
       return [];
     }
@@ -70,6 +71,7 @@ class CalendarPager extends PagerPluginBase {
    *   Either '-' or '+' to determine which direction.
    *
    * @return string
+   *   Formatted date time.
    */
   protected function getPagerArgValue($mode) {
     $datetime = $this->argument->createDateTime();
@@ -87,6 +89,7 @@ class CalendarPager extends PagerPluginBase {
    *   input.
    *
    * @return string
+   *   Url.
    */
   protected function getPagerUrl($mode, array $input) {
     $value = $this->getPagerArgValue($mode);
@@ -105,7 +108,16 @@ class CalendarPager extends PagerPluginBase {
       $current_position++;
     }
 
-    return $this->view->getUrl($arg_vals, $this->view->current_display);
+    $display_handler = $this->view->displayHandlers->get($this->view->current_display)
+      ->getRoutedDisplay();
+    if ($display_handler) {
+      $url = $this->view->getUrl($arg_vals, $this->view->current_display);
+    }
+    else {
+      $url = Url::fromRoute('<current>', [], [])->toString();
+    }
+
+    return $url;
   }
 
   /**
