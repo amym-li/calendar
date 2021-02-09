@@ -226,10 +226,10 @@ class CalendarHelper extends DateHelper {
    */
   public static function isoWeeksInYear($date = NULL) {
     if (empty($date)) {
-      $date = new DateTime();
+      $date = new \DateTime();
     }
     elseif (!is_object($date)) {
-      $date = new DateTime($date);
+      $date = new \DateTime($date);
     }
 
     if (is_object($date)) {
@@ -356,9 +356,9 @@ class CalendarHelper extends DateHelper {
     $parts = explode('-', $date);
 
     $timezone = new \DateTimeZone('UTC');
-    $date = new DateTime($date . ' 12:00:00', $timezone);
+    $date = new \DateTime($date . ' 12:00:00', $timezone);
 
-    $year_date = new DateTime($parts[0] . '-01-01 12:00:00', $timezone);
+    $year_date = new \DateTime($parts[0] . '-01-01 12:00:00', $timezone);
     $week = intval($date->format('W'));
     $year_week = intval(date_format($year_date, 'W'));
     $date_year = intval($date->format('o'));
