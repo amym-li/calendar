@@ -159,7 +159,7 @@ class ViewsFieldTemplate implements ContainerDeriverInterface {
       }
       if (in_array("Drupal\datetime\Plugin\Field\FieldType\DateTimeItem", $classes[$type])) {
         $entity_type_id = $entity_type->id();
-        $views_data = $this->viewsData->get();
+        $views_data = $this->viewsData->getAll();
         foreach ($views_data as $key => $data) {
           if (strstr($key, $field_id) && isset($data[$field_id])) {
             $field_table = $key;
