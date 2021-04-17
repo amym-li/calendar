@@ -98,9 +98,9 @@ class CalendarHelper extends DateHelper {
   /**
    * Computes difference between two days using a given measure.
    *
-   * @param DateTime $start_date
+   * @param \DateTime $start_date
    *   The start date.
-   * @param DateTime $stop_date
+   * @param \DateTime $stop_date
    *   The stop date.
    * @param string $measure
    *   (optional) A granularity date part. Defaults to 'seconds'.
@@ -111,7 +111,7 @@ class CalendarHelper extends DateHelper {
    * @return int
    *   The difference between the 2 dates in the given measure.
    */
-  public static function difference(DateTime $start_date, DateTime $stop_date, $measure = 'seconds', $absolute = TRUE) {
+  public static function difference(\DateTime $start_date, \DateTime $stop_date, $measure = 'seconds', $absolute = TRUE) {
     // Create cloned objects or original dates will be impacted by the
     // date_modify() operations done in this code.
     $date1 = clone($start_date);
