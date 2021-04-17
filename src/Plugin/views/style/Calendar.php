@@ -1255,7 +1255,12 @@ class Calendar extends StylePluginBase {
                   // this week.
                   for ($i = 0; $i < $bucket_cnt; $i++) {
                     $bucket = &$multiday_buckets[$i + $wday + 1];
-                    $bucket_row_count = count($bucket);
+                    if (!empty($bucket)) {
+                      $bucket_row_count = count($bucket);
+                    }
+                    else {
+                      $bucket_row_count = 0;
+                    }
                     $row_diff = $bucket_index - $bucket_row_count;
 
                     // Fill up the preceding buckets - these are available for
