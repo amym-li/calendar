@@ -29,9 +29,9 @@
     <table class="mini">
       <thead>
         <tr>
-          {% for day_names in cell %}
+          {% for cell in day_names %}
             <th class="{{ cell.class }}">
-              { cell.data }}
+              {{ cell.data }}
             </th>
           {% endfor %}
         </tr>

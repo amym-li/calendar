@@ -110,6 +110,7 @@ function calendar_theme() {
   return [
     'calendar_mini' => [
       'variables' => ['view' => NULL, 'options' => [], 'rows' => []],
+      'file' => 'calendar.theme.inc',
     ],
     'calendar_month_multiple_entity' => [
       'variables' => ['curday' => NULL, 'count' => NULL, 'view' => NULL, 'ids' => NULL],

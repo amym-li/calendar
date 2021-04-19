@@ -206,6 +206,7 @@ class Calendar extends StylePluginBase {
       'default' => [
         'day' => '',
         'week' => '',
+        'month' => '',
       ],
     ];
 
@@ -460,6 +461,13 @@ class Calendar extends StylePluginBase {
       '#default_value' => $this->options['granularity_links']['week'],
       '#description' => $this->t("Optionally select a View display to use for Week links."),
       '#options' => ['' => $this->t('Default display')] + $this->viewOptionsForGranularity('week'),
+    ];
+    $form['granularity_links']['month'] = [
+      '#title' => $this->t('Month link displays'),
+      '#type' => 'select',
+      '#default_value' => $this->options['granularity_links']['month'],
+      '#description' => $this->t("Optionally select a View display to use for Month links."),
+      '#options' => ['' => $this->t('Default display')] + $this->viewOptionsForGranularity('month'),
     ];
   }
 
@@ -1405,8 +1413,8 @@ class Calendar extends StylePluginBase {
         '#items' => $this->items,
         '#selected' => $selected,
       ],
-      '#empty' => $empty,
-      '#link' => $link,
+      'empty' => $empty,
+      'link' => $link,
       'all_day' => $all_day,
       'items' => $inner,
     ];

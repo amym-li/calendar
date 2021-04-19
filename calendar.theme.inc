@@ -43,22 +43,22 @@ function template_preprocess_calendar_month(&$vars) {
           $month_rows[$weekno][$day]['data'] = $cell;
           continue;
         }
-        $data = $cell['datebox'];
+        $data = [$cell['datebox']];
         if ($cell['empty']) {
-          $data .= $cell['empty'];
+          $data[] = $cell['empty'];
         }
         else {
-          $data .= implode($cell['all_day']);
+          $data[] = $cell['all_day'];
           foreach ($cell['items'] as $hour => $item) {
-            $data .= implode($item);
+            $data[] = $item;
           }
-          $data .= $cell['link'];
+          $data[] = $cell['link'];
         }
         if ($view->styleInfo->isMini()) {
-          $month_rows[$weekno][$day]['data'] = $data;
+          $month_rows[$weekno][$day]['data'] = \Drupal::service('renderer')->render($data);
         }
         else {
-          $month_rows[$weekno][$day]['data'] = '<div class="inner">' . $data . '</div>';
+          $month_rows[$weekno][$day]['data'] = '<div class="inner">' . \Drupal::service('renderer')->render($data) . '</div>';
         }
       }
     }
@@ -70,6 +70,7 @@ function template_preprocess_calendar_month(&$vars) {
   $vars['display_type'] = $view->dateInfo->getGranularity();
   $vars['min_date_formatted'] = $view->dateInfo->getMinDate()->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
   $vars['max_date_formatted'] = $view->dateInfo->getMaxDate()->format(DateTimeItemInterface::DATE_STORAGE_FORMAT);
+  $vars['date'] = $view->dateInfo->getMinDate()->format('Y-m');
 }
 
 /**
@@ -87,8 +88,6 @@ function template_preprocess_calendar_mini(&$vars) {
   $full_date_arg = str_replace('-', '', $date);
   $view->override_path = CalendarHelper::getURLForGranularity($view, 'month', [$full_date_arg]);
 
-  $view->date_info->show_title = !empty($view->date_info->show_title) ? $view->date_info->show_title : FALSE;
-  $vars['show_title'] = $view->date_info->show_title;
   $vars['view'] = $view;
 }
 
