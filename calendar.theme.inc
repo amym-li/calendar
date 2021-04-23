@@ -445,11 +445,11 @@ function template_preprocess_calendar_week(&$vars) {
         $next_start_time = count($start_times) ? array_shift($start_times) : $end_start_time;
         foreach ($row as &$item) {
           // @todo find out how empty days should be handled properly.
-          if ($item['entry']['#theme'] === 'calendar_empty_day') {
+          if (isset($item['entry']) && ($item['entry']['#theme'] === 'calendar_empty_day')) {
             continue;
           }
           // @todo find out what to do when the item is no event.
-          if (!is_object($item['item'])) {
+          if (!isset($item['item']) || !is_object($item['item'])) {
             continue;
           }
           $time = date_format($item['item']->getStartDate(), 'H:i:s');
