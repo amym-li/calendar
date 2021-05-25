@@ -92,8 +92,7 @@
  */
 .calendar-calendar .inner {
   min-height: 5em;
-  height: auto !important;
-  height: 5em;
+  height: auto;
   padding: 0;
   margin: 0;
 }
@@ -141,8 +140,9 @@
   padding: 0.125em 0.25em 0 0.25em;
   margin: 0;
   background-color: #f3f3f3;
-  border: 1px solid gray;
   border-width: 0 0 1px 1px;
+  border-style: solid;
+  border-color: gray;
   clear: both;
   width: 1.5em;
 }
@@ -159,6 +159,7 @@
   float: right; /* needed to keep IE from hiding the floating day number */
   clear: both;
 }
+
 /**
  * No floating of day view content because there is no floating day number.
  */
@@ -197,10 +198,10 @@ table td.mini a {
   font-weight: normal;
 }
 .calendar-calendar .mini-day-off {
-  padding: 0px;
+  padding: 0;
 }
 .calendar-calendar .mini-day-on {
-  padding: 0px;
+  padding: 0;
 }
 table .mini-day-on a {
   text-decoration: underline;
@@ -400,7 +401,7 @@ nav.pager > ul {
 }
 /**
  * The following are not used by default but are available for themes.
- */
+ *
 .calendar-calendar td.past {
 }
 .calendar-calendar td.future {
@@ -409,3 +410,4 @@ nav.pager > ul {
 }
 .calendar-calendar td.has-no-events {
 }
+*/

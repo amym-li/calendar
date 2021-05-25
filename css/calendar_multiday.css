@@ -75,8 +75,7 @@
  * http://www.dustindiaz.com/min-height-fast-hack .
  */
 .calendar-calendar .inner {
-  height: auto !important;
-  height: 5em;
+  height: auto;
   margin: 0;
   padding: 0;
 }
@@ -197,6 +196,7 @@ table .mini-day-on a {
   width: 32%;
   vertical-align: top;
 }
+
 /**
  * Formatting for the legend stripe and block.
  */
@@ -633,8 +633,7 @@ table.calendar-legend tr.even .stripe {
 .calendar-calendar .week-view .full td.multi-day .inner .weekview .cutoff {
   position: absolute;
   z-index: 1;
-  right: 0 !important;
-  right: -1px;
+  right: 0;
   width: 10px;
   height: 1.9em;
   padding-left: 6px;

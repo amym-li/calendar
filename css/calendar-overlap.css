@@ -3,8 +3,7 @@
  */
 .calendar-calendar tr.holder {
   height: 0;
-  display: table-row !important;
-  display: none;
+  display: table-row;
 }
 
 .calendar-calendar .week-view .full div.item-wrapper,
@@ -738,19 +737,16 @@
 }
 
 .calendar-calendar .week-view div.single-day .i_0.md_0 .view-item .calendar {
-  width: 95% !important;
-  width: auto;
+  width: 95%;
 }
 
 .calendar-calendar .week-view div.single-day .i_0.md_1 .view-item .calendar {
-  width: 60% !important;
-  width: auto;
+  width: 60%;
 }
 
 .calendar-calendar .day-view div.single-day .i_0 .view-item .calendar {
   margin-left: 2px;
-  width: 25% !important;
-  width: 97%;
+  width: 25%;
 }
 
 .calendar-calendar .day-view div.single-day .i_1 .view-item .calendar {
@@ -799,23 +795,19 @@
 }
 
 .calendar-calendar .day-view div.single-day .i_0.md_0 .view-item .calendar {
-  width: 98% !important;
-  width: auto;
+  width: 98%;
 }
 
 .calendar-calendar .day-view div.single-day .i_0.md_1 .view-item .calendar {
-  width: 60% !important;
-  width: auto;
+  width: 60%;
 }
 
 .calendar-calendar .day-view div.single-day .i_0.md_2 .view-item .calendar {
-  width: 40% !important;
-  width: auto;
+  width: 40%;
 }
 
 .calendar-calendar .day-view div.single-day .i_0.md_3 .view-item .calendar {
-  width: 30% !important;
-  width: auto;
+  width: 30%;
 }
 
 .single-day-footer .grippie,
