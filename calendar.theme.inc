@@ -54,12 +54,7 @@ function template_preprocess_calendar_month(&$vars) {
           }
           $data[] = $cell['link'];
         }
-        if ($view->styleInfo->isMini()) {
-          $month_rows[$weekno][$day]['data'] = \Drupal::service('renderer')->render($data);
-        }
-        else {
-          $month_rows[$weekno][$day]['data'] = '<div class="inner">' . \Drupal::service('renderer')->render($data) . '</div>';
-        }
+        $month_rows[$weekno][$day]['data'] = \Drupal::service('renderer')->render($data);
       }
     }
   }
