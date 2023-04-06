@@ -19,6 +19,7 @@ use Drupal\views\Views;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\controlled_access_terms\EDTFUtils;
 
 /**
  * Plugin which creates a view on the resulting object and formats it as a
@@ -446,6 +447,7 @@ class Calendar extends RowPluginBase {
       $item_end_date   = NULL;
       $granularity     = 'month';
       $increment       = 1;
+      $edtf = FALSE;
 
       // @todo implement timezone support
       // use $dateInfo to get field(s) used as arguments
@@ -453,6 +455,10 @@ class Calendar extends RowPluginBase {
       $field_definition = $entity->getFieldDefinition($entity_field_name);
       if ($field_definition instanceof BaseFieldDefinition) {
         $storage_format = 'U';
+      }
+      else if ($field_definition->getType() == 'edtf') {
+        $edtf = TRUE;
+        $storage_format = 'Y-m-d\TH:i:s';
       }
       else {
         $datetime_type = $field_definition->getSetting('datetime_type');
@@ -477,7 +483,13 @@ class Calendar extends RowPluginBase {
         // For each date on the entity create a new event in the calendar.
         $event = clone $event;
         if (isset($item)) {
-          $item_start_date = \DateTime::createFromFormat($storage_format, $item['value'], $timezone);
+          if ($edtf) {
+            $val = EDTFUtils::iso8601Value($item['value']);
+            $item_start_date = \DateTime::createFromFormat($storage_format, $val, $timezone);
+          }
+          else {
+            $item_start_date = \DateTime::createFromFormat($storage_format, $item['value'], $timezone);
+          }
         }
         if (isset($item) && !empty($item['end_value'])) {
           $item_end_date = \DateTime::createFromFormat($storage_format, $item['end_value'], $timezone);
